@@ -3,11 +3,28 @@
     "$schema": "../../node_modules/nx/schemas/project-schema.json",
     "sourceRoot": "packages/qgis-ts-emotion/src",
     "projectType": "library",
-    "tags": ["ui"],
+    "tags": [
+        "ui"
+    ],
     "targets": {
+        "translate": {
+            "executor": "nx:run-commands",
+            "options": {
+                "commands": [
+                    "cross-env FJS_DIR={projectRoot}/i18n formatjs extract {projectRoot}/src/**/*.{ts,tsx} --format tools/formatTranslation.mjs --out-file {projectRoot}/i18n/extracted-messages.json",
+                    "cross-env FJS_FILE={projectRoot}/i18n/en.json formatjs compile {projectRoot}/i18n/extracted-messages.json --format tools/formatTranslation.mjs --out-file {projectRoot}/i18n/en.json",
+                    "cross-env FJS_FILE={projectRoot}/i18n/ro.json formatjs compile {projectRoot}/i18n/extracted-messages.json --format tools/formatTranslation.mjs --out-file {projectRoot}/i18n/ro.json"
+                ],
+                "parallel": false
+            },
+            "inputs": ["^tsFiles"],
+            "outputs": ["{projectRoot}/i18n"]
+        },
         "lint": {
             "executor": "@nx/eslint:lint",
-            "outputs": ["{options.outputFile}"],
+            "outputs": [
+                "{options.outputFile}"
+            ],
             "options": {
                 "lintFilePatterns": [
                     "packages/qgis-ts-emotion/**/*.{ts,tsx,js,jsx}"
@@ -16,13 +33,26 @@
         },
         "build": {
             "executor": "@nx/rollup:rollup",
-            "outputs": ["{options.outputPath}"],
+            "outputs": [
+                "{options.outputPath}"
+            ],
+            "dependsOn": [
+                {
+                    "target": "build",
+                    "projects": ["qgis-ts-react"]
+                },
+                "translate"
+            ],
             "options": {
                 "outputPath": "dist/packages/qgis-ts-emotion",
                 "tsConfig": "packages/qgis-ts-emotion/tsconfig.lib.json",
                 "project": "packages/qgis-ts-emotion/package.json",
                 "entryFile": "packages/qgis-ts-emotion/src/index.ts",
-                "external": ["react", "react-dom", "react/jsx-runtime"],
+                "external": [
+                    "react",
+                    "react-dom",
+                    "react/jsx-runtime"
+                ],
                 "rollupConfig": "@nx/react/plugins/bundle-rollup",
                 "compiler": "babel",
                 "assets": [
@@ -36,7 +66,9 @@
         },
         "test": {
             "executor": "@nx/jest:jest",
-            "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+            "outputs": [
+                "{workspaceRoot}/coverage/{projectRoot}"
+            ],
             "options": {
                 "jestConfig": "packages/qgis-ts-emotion/jest.config.ts",
                 "passWithNoTests": true

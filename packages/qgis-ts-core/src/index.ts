@@ -1,1 +1,2 @@
-export * from './browser/qgis-ts-core';
+export { getBrowserInfo } from './browser';
+export type { BrowserInfo } from './browser';

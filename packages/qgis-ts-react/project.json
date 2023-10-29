@@ -5,6 +5,19 @@
     "projectType": "library",
     "tags": ["react"],
     "targets": {
+        "translate": {
+            "executor": "nx:run-commands",
+            "options": {
+                "commands": [
+                    "cross-env FJS_DIR={projectRoot}/i18n formatjs extract {projectRoot}/src/**/*.{ts,tsx} --format tools/formatTranslation.mjs --out-file {projectRoot}/i18n/extracted-messages.json",
+                    "cross-env FJS_FILE={projectRoot}/i18n/en.json formatjs compile {projectRoot}/i18n/extracted-messages.json --format tools/formatTranslation.mjs --out-file {projectRoot}/i18n/en.json",
+                    "cross-env FJS_FILE={projectRoot}/i18n/ro.json formatjs compile {projectRoot}/i18n/extracted-messages.json --format tools/formatTranslation.mjs --out-file {projectRoot}/i18n/ro.json"
+                ],
+                "parallel": false
+            },
+            "inputs": ["^tsFiles"],
+            "outputs": ["{projectRoot}/i18n"]
+        },
         "lint": {
             "executor": "@nx/eslint:lint",
             "outputs": ["{options.outputFile}"],
@@ -17,6 +30,13 @@
         "build": {
             "executor": "@nx/rollup:rollup",
             "outputs": ["{options.outputPath}"],
+            "dependsOn": [
+                {
+                    "target": "build",
+                    "projects": ["qgis-ts-core"]
+                },
+                "translate"
+            ],
             "options": {
                 "outputPath": "dist/packages/qgis-ts-react",
                 "tsConfig": "packages/qgis-ts-react/tsconfig.lib.json",

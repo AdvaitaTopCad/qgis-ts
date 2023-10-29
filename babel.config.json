@@ -6,5 +6,14 @@
         // Also consider monorepo packages "root" and load their .babelrc.json files.
         "./packages/*",
         "./apps/*"
+    ],
+    "plugins": [
+        [
+            "formatjs",
+            {
+                "idInterpolationPattern": "[sha512:contenthash:base64:6]",
+                "ast": true
+            }
+        ]
     ]
 }

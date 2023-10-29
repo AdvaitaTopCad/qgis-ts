@@ -4,10 +4,30 @@
     "sourceRoot": "apps/qgis-ts-demo/src",
     "projectType": "application",
     "targets": {
+        "translate": {
+            "executor": "nx:run-commands",
+            "options": {
+                "commands": [
+                    "cross-env FJS_DIR={projectRoot}/i18n formatjs extract {projectRoot}/src/**/*.{ts,tsx} --format tools/formatTranslation.mjs --out-file {projectRoot}/i18n/extracted-messages.json",
+                    "cross-env FJS_FILE={projectRoot}/i18n/en.json formatjs compile {projectRoot}/i18n/extracted-messages.json {projectRoot}/../../packages/**/i18n/extracted-messages.json --format tools/formatTranslation.mjs --out-file {projectRoot}/i18n/en.json",
+                    "cross-env FJS_FILE={projectRoot}/i18n/ro.json formatjs compile {projectRoot}/i18n/extracted-messages.json {projectRoot}/../../packages/**/i18n/extracted-messages.json --format tools/formatTranslation.mjs --out-file {projectRoot}/i18n/ro.json"
+                ],
+                "parallel": false
+            },
+            "inputs": ["^tsFiles"],
+            "outputs": ["{projectRoot}/i18n"]
+        },
         "build": {
             "executor": "@nx/webpack:webpack",
             "outputs": ["{options.outputPath}"],
             "defaultConfiguration": "production",
+            "dependsOn": [
+                {
+                    "target": "build",
+                    "projects": ["qgis-ts-emotion"]
+                },
+                "translate"
+            ],
             "options": {
                 "compiler": "babel",
                 "outputPath": "dist/apps/qgis-ts-demo",

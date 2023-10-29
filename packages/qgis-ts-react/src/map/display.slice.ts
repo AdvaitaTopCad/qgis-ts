@@ -1,4 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { Draft } from "immer";
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 import type { QgisMapState } from './store';
