@@ -1,0 +1,96 @@
+{
+    "name": "qgis-ts-demo",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "apps/qgis-ts-demo/src",
+    "projectType": "application",
+    "targets": {
+        "build": {
+            "executor": "@nx/webpack:webpack",
+            "outputs": ["{options.outputPath}"],
+            "defaultConfiguration": "production",
+            "options": {
+                "compiler": "babel",
+                "outputPath": "dist/apps/qgis-ts-demo",
+                "index": "apps/qgis-ts-demo/src/index.html",
+                "baseHref": "/",
+                "main": "apps/qgis-ts-demo/src/main.tsx",
+                "tsConfig": "apps/qgis-ts-demo/tsconfig.app.json",
+                "assets": [
+                    "apps/qgis-ts-demo/src/favicon.ico",
+                    "apps/qgis-ts-demo/src/assets"
+                ],
+                "styles": [],
+                "scripts": [],
+                "isolatedConfig": true,
+                "webpackConfig": "apps/qgis-ts-demo/webpack.config.js"
+            },
+            "configurations": {
+                "development": {
+                    "extractLicenses": false,
+                    "optimization": false,
+                    "sourceMap": true,
+                    "vendorChunk": true
+                },
+                "production": {
+                    "fileReplacements": [
+                        {
+                            "replace": "apps/qgis-ts-demo/src/environments/environment.ts",
+                            "with": "apps/qgis-ts-demo/src/environments/environment.prod.ts"
+                        }
+                    ],
+                    "optimization": true,
+                    "outputHashing": "all",
+                    "sourceMap": false,
+                    "namedChunks": false,
+                    "extractLicenses": true,
+                    "vendorChunk": false
+                }
+            }
+        },
+        "serve": {
+            "executor": "@nx/webpack:dev-server",
+            "defaultConfiguration": "development",
+            "options": {
+                "buildTarget": "qgis-ts-demo:build",
+                "hmr": true
+            },
+            "configurations": {
+                "development": {
+                    "buildTarget": "qgis-ts-demo:build:development"
+                },
+                "production": {
+                    "buildTarget": "qgis-ts-demo:build:production",
+                    "hmr": false
+                }
+            }
+        },
+        "lint": {
+            "executor": "@nx/eslint:lint",
+            "outputs": ["{options.outputFile}"],
+            "options": {
+                "lintFilePatterns": ["apps/qgis-ts-demo/**/*.{ts,tsx,js,jsx}"]
+            }
+        },
+        "serve-static": {
+            "executor": "@nx/web:file-server",
+            "options": {
+                "buildTarget": "qgis-ts-demo:build"
+            }
+        },
+        "test": {
+            "executor": "@nx/jest:jest",
+            "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+            "options": {
+                "jestConfig": "apps/qgis-ts-demo/jest.config.ts",
+                "passWithNoTests": true
+            },
+            "configurations": {
+                "ci": {
+                    "ci": true,
+                    "codeCoverage": true
+                }
+            }
+        }
+    },
+    "tags": ["demo"]
+}

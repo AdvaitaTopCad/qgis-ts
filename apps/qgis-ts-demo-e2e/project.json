@@ -1,0 +1,33 @@
+{
+    "name": "qgis-ts-demo-e2e",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "projectType": "application",
+    "sourceRoot": "apps/qgis-ts-demo-e2e/src",
+    "targets": {
+        "e2e": {
+            "executor": "@nx/cypress:cypress",
+            "options": {
+                "cypressConfig": "apps/qgis-ts-demo-e2e/cypress.config.ts",
+                "testingType": "e2e",
+                "devServerTarget": "qgis-ts-demo:serve"
+            },
+            "configurations": {
+                "production": {
+                    "devServerTarget": "qgis-ts-demo:serve:production"
+                },
+                "ci": {
+                    "devServerTarget": "qgis-ts-demo:serve-static"
+                }
+            }
+        },
+        "lint": {
+            "executor": "@nx/eslint:lint",
+            "outputs": ["{options.outputFile}"],
+            "options": {
+                "lintFilePatterns": ["apps/qgis-ts-demo-e2e/**/*.{js,ts}"]
+            }
+        }
+    },
+    "implicitDependencies": ["qgis-ts-demo"],
+    "tags": []
+}

@@ -1,0 +1,47 @@
+{
+    "name": "qgis-ts-core",
+    "$schema": "../../node_modules/nx/schemas/project-schema.json",
+    "sourceRoot": "packages/qgis-ts-core/src",
+    "projectType": "library",
+    "targets": {
+        "build": {
+            "executor": "@nx/js:tsc",
+            "outputs": ["{options.outputPath}"],
+            "options": {
+                "outputPath": "dist/packages/qgis-ts-core",
+                "main": "packages/qgis-ts-core/src/index.ts",
+                "tsConfig": "packages/qgis-ts-core/tsconfig.lib.json",
+                "assets": ["packages/qgis-ts-core/*.md"]
+            }
+        },
+        "publish": {
+            "command": "node tools/scripts/publish.mjs qgis-ts-core {args.ver} {args.tag}",
+            "dependsOn": ["build"]
+        },
+        "lint": {
+            "executor": "@nx/eslint:lint",
+            "outputs": ["{options.outputFile}"],
+            "options": {
+                "lintFilePatterns": [
+                    "packages/qgis-ts-core/**/*.ts",
+                    "packages/qgis-ts-core/package.json"
+                ]
+            }
+        },
+        "test": {
+            "executor": "@nx/jest:jest",
+            "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+            "options": {
+                "jestConfig": "packages/qgis-ts-core/jest.config.ts",
+                "passWithNoTests": true
+            },
+            "configurations": {
+                "ci": {
+                    "ci": true,
+                    "codeCoverage": true
+                }
+            }
+        }
+    },
+    "tags": ["core"]
+}
