@@ -4,36 +4,82 @@ import type { Draft } from "immer";
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 import type { QgisMapState } from './store';
+import { Extent } from 'ol/extent';
+import { Size } from 'ol/size';
+import { Coordinate } from 'ol/coordinate';
+
 
 /**
- * Information about the display.
+ * Information about the map.
+ */
+export interface ViewState {
+    /**
+     * The center of the map.
+     */
+    center: Coordinate;
+
+    /**
+     * The zoom level of the map.
+     */
+    zoom: number | undefined;
+
+    /**
+     * The bounding box of the map.
+     */
+    bbox: {
+        bounds: Extent;
+        rotation: number;
+    }
+
+    /**
+     * The size of the map as reported by the view.
+     */
+    size: {
+        width: number;
+        height: number;
+    },
+};
+
+
+/**
+ * Information about the mP.
  */
 export interface MapState {
-
+    view: ViewState;
 
 };
 
 
 const initialState: MapState = {
-
+    view: {
+        center: [0, 0],
+        zoom: 0,
+        bbox: {
+            bounds: [0, 0, 0, 0],
+            rotation: 0,
+        },
+        size: [0, 0],
+    },
 };
 
 
 /**
- * Current display management.
+ * Current map management.
  */
-export const displaySlice = createSlice({
+export const mapSlice = createSlice({
     name: 'map',
     initialState,
     reducers: {
-
+        setMapView: (state, action: PayloadAction<ViewState>) => {
+            state.view = action.payload;
+        },
     },
 });
 
 
-// export const {
-//     toggleFullScreen
-// } = displaySlice.actions;
+export const {
+    setMapView
+} = mapSlice.actions;
 
 
 /**

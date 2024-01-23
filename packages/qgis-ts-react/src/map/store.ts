@@ -1,13 +1,19 @@
 import { configureStore } from '@reduxjs/toolkit'
 
 import { displaySlice } from './display.slice';
+import { mouseSlice } from './mouse.slice';
+import { mapSlice } from './map.slice';
 
 export const reducerObject = {
     [displaySlice.name]: displaySlice.reducer,
+    [mouseSlice.name]: mouseSlice.reducer,
+    [mapSlice.name]: mapSlice.reducer,
 };
 
 export const initialState = {
     [displaySlice.name]: displaySlice.getInitialState(),
+    [mouseSlice.name]: mouseSlice.getInitialState(),
+    [mapSlice.name]: mapSlice.getInitialState(),
 };
 
 export const store = configureStore({

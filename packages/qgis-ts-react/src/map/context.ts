@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react';
 import { QgisMapState } from './store';
+import { IntlShape } from 'react-intl';
 
 
 /**
@@ -16,7 +17,10 @@ export interface QgisMapContext extends QgisMapState {
      */
     mapRef: (element: HTMLDivElement | null) => void;
 
-
+    /**
+     * The translation provider.
+     */
+    intl: IntlShape;
 };
 
 
