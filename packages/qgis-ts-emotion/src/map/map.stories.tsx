@@ -24,7 +24,12 @@ export default storybookConfig;
 const Template: StoryFn<StoryProps> = () => {
     return (
         <IntlProvider locale="en" onError={() => {}}>
-            <QgisMap />
+            <QgisMap
+                initialView={{
+                    center: [0, 0],
+                    zoom: 1,
+                }}
+            />
         </IntlProvider>
     );
 }

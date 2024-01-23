@@ -1,6 +1,7 @@
 import { createContext, useContext } from 'react';
 import { QgisMapState } from './store';
 import { IntlShape } from 'react-intl';
+import { LayerID, MapLayer } from './layers.slice';
 
 
 /**
@@ -21,6 +22,63 @@ export interface QgisMapContext extends QgisMapState {
      * The translation provider.
      */
     intl: IntlShape;
+
+    /**
+     * The current parent layer.
+     *
+     * This is used to allow creating thr tree of layers using React
+     * components via `MapLayerComp`.
+     */
+    groupLayerInTree: LayerID;
+
+    /**
+     * The callback to set the active base layer.
+     */
+    setActiveBaseLayer: (layerId: LayerID | undefined) => void;
+
+    /**
+     * The callback to set the active overlay layer.
+     */
+    setActiveOverlayLayer: (layerId: LayerID | undefined) => void;
+
+    /**
+     * The callback to add a base layer.
+     */
+    addBaseLayer: (layer: MapLayer, activate?: boolean) => void;
+
+    /**
+     * The callback to remove a base layer.
+     */
+    removeBaseLayer: (layerId: string) => void;
+
+    /**
+     * The callback to edit a base layer.
+     */
+    editBaseLayer: (layer: MapLayer, activate?: boolean) => void;
+
+    /**
+     * The callback to add an overlay layer.
+     */
+    addOverlayLayer: (layer: MapLayer, activate?: boolean) => void;
+
+    /**
+     * The callback to remove an overlay layer.
+     */
+    removeOverlayLayer: (layerId: string) => void;
+
+    /**
+     * The callback to edit an overlay layer.
+     */
+    editOverlayLayer: (layer: MapLayer, activate?: boolean) => void;
+
+    /**
+     * The callback to reorder a base layer.
+     */
+    reorderOverlayLayer: (
+        layer: LayerID,
+        parent: LayerID | undefined,
+        index: number,
+    ) => void;
 };
 
 

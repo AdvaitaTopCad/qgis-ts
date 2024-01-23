@@ -1,9 +1,13 @@
-import { FC, ReactNode, useCallback, useEffect, useId, useReducer, useRef } from 'react';
+import {
+    FC, ReactNode, useCallback, useEffect, useId, useReducer, useRef
+} from 'react';
+import { useEffectDebugger, useCallbackDebugger, useLogChanges } from 'use-debugger-hooks';
 import { combineReducers } from 'redux';
 import { IntlShape, useIntl } from 'react-intl';
 
 import OlMap from 'ol/Map';
 import OlView, { ViewOptions } from 'ol/View';
+import { Coordinate } from 'ol/coordinate';
 
 import { defaults as olCreateInteractionDefaults } from 'ol/interaction';
 import OlInteractionDoubleClickZoom from 'ol/interaction/DoubleClickZoom';
@@ -30,11 +34,16 @@ import OlControlOverviewMap from 'ol/control/OverviewMap';
 import OlControlScaleLine from 'ol/control/ScaleLine';
 import OlControlZoom from 'ol/control/Zoom';
 
+import { LayerID, MapLayer, ROOT_LAYER_ID } from '../layers/defs';
 import { QgisMapContextProvider } from './context';
 import type { QgisMapContext } from './context';
 import { reducerObject, initialState, QgisMapState } from './store';
 import { setMapView } from './map.slice';
-import { Coordinate } from 'ol/coordinate';
+import {
+    addBaseLayer, addOverlayLayer, editBaseLayer,
+    editOverlayLayer, removeBaseLayer, removeOverlayLayer, reorderOverlayLayer,
+    setActiveBaseLayer, setActiveOverlayLayer
+} from './layers.slice';
 
 
 /**
@@ -49,7 +58,7 @@ export interface QgisMapControllerProps {
     /**
      * The children of the controller.
      */
-    children: ReactNode;
+    children?: ReactNode;
 };
 
 
@@ -100,21 +109,14 @@ interface ControllerData {
 }
 
 
-const setRequestsPaused = (data: ControllerData, paused: boolean) => {
-    data.requestsPaused = paused;
-    // (data.map as any).tileQueue_.setRequestsPaused(paused);
-    // data.map!.getView().setRequestsPaused(paused);
-
-}
-
-
 /**
  * Creates an openlayers map.
  */
 export function createMap(
     data: ControllerData,
-    state: QgisMapState,
-    initialView: ViewOptions
+    mouseState: any,
+    initialView: ViewOptions,
+    mapId: string
 ) {
 
     const interactions = olCreateInteractionDefaults({
@@ -126,7 +128,7 @@ export function createMap(
     });
     interactions.extend([
         new OlInteractionDragPan({ kinetic: undefined }),
-        new OlInteractionMouseWheelZoom(state.mouse),
+        new OlInteractionMouseWheelZoom(mouseState),
         new OlInteractionKeyboardZoom()
     ]);
     const controls = olCreateControlDefaults({
@@ -155,6 +157,11 @@ export function createMap(
     data.map.on('moveend', data.unblockRequests);
     // data.map.on('singleclick', (event) => data.onClick(0, event.originalEvent, event.pixel));
 
+    // Set the target element to render this map into.
+    data.map.setTarget(mapId);
+
+    // Update the internal state.
+    data.updateMapInfoState();
 }
 
 
@@ -171,10 +178,6 @@ export const updateMapInfoState = (
     const view = map.getView();
     const c: Coordinate = view.getCenter() || [0, 0];
     const mapSize = map.getSize();
-    const bbox = {
-        bounds: view.calculateExtent(mapSize),
-        rotation: view.getRotation()
-    };
     const size = mapSize ? {
         width: mapSize[0],
         height: mapSize[1]
@@ -197,11 +200,14 @@ export const updateMapInfoState = (
 /**
  * The QGis map controller.
  */
-export const QgisMapController: FC<QgisMapControllerProps> = ({
-    initialView,
-    children
-}) => {
+export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
     console.log('[QgisMapController] rendering');
+    useLogChanges(props);
+
+    const {
+        initialView,
+        children
+    }  = props;
 
     // Our translation provider.
     const intl = useIntl();
@@ -226,9 +232,11 @@ export const QgisMapController: FC<QgisMapControllerProps> = ({
         panning: false,
         unpauseTimeout: null,
         updateMapInfoState: () => {
+            console.log('[QgisMapController] updateMapInfoState');
             updateMapInfoState(mapData.current.map!, dispatch)
         },
         unblockRequests: () => {
+            console.log('[QgisMapController] unblockRequests');
             if (mapData.current.panning) {
                 if (mapData.current.unpauseTimeout) {
                     clearTimeout(mapData.current.unpauseTimeout);
@@ -236,7 +244,7 @@ export const QgisMapController: FC<QgisMapControllerProps> = ({
                 mapData.current.unpauseTimeout = setTimeout(() => {
                     mapData.current.updateMapInfoState();
                     mapData.current.requestsPaused = false;
-                    // TODO redraw
+                    // TODO redraw?
                     mapData.current.unpauseTimeout = null;
                     mapData.current.panning = false;
                 }, 500) as unknown as number;
@@ -246,18 +254,20 @@ export const QgisMapController: FC<QgisMapControllerProps> = ({
 
 
     // Called after the div element is mounted. Creates the map.
-    const mapRef = useCallback((node: HTMLDivElement | null) => {
+    const mapRef = useCallbackDebugger((node: HTMLDivElement | null) => {
+        console.log('[QgisMapController] mapRef receives %O', node);
         if (node === null) {
             return;
         }
         mapData.current.intl = intl;
         mapData.current.mapNode = node;
-        createMap(mapData.current, state, initialView);
-    }, [intl, state, initialView]);
+        createMap(mapData.current, state.mouse, initialView, mapId);
+    }, [intl, state.mouse, initialView]);
 
 
     // Recreate the layers when the internal state changes.
-    useEffect(() => {
+    useEffectDebugger(() => {
+        console.log('[QgisMapController] recreate layers effect');
         if (mapData.current.map === null) {
             return;
         }
@@ -270,9 +280,64 @@ export const QgisMapController: FC<QgisMapControllerProps> = ({
         mapId,
         mapRef,
         intl,
+
+        // The current parent layer used to construct the tree.
+        groupLayerInTree: ROOT_LAYER_ID,
+
+        // The callback to set the active base layer.
+        setActiveBaseLayer: useCallbackDebugger((layerId: LayerID | undefined) => {
+            dispatch(setActiveBaseLayer(layerId));
+        }, []),
+
+        // The callback to set the active overlay layer.
+        setActiveOverlayLayer: useCallbackDebugger((layerId: LayerID | undefined) => {
+            dispatch(setActiveOverlayLayer(layerId));
+        }, []),
+
+        // The callback to add a base layer.
+        addBaseLayer: useCallbackDebugger((layer: MapLayer, activate?: boolean) => {
+            dispatch(addBaseLayer({ layer, activate }));
+        }, []),
+
+        // The callback to remove a base layer.
+        removeBaseLayer: useCallbackDebugger((layerId: string) => {
+            dispatch(removeBaseLayer(layerId));
+        }, []),
+
+        // The callback to edit a base layer.
+        editBaseLayer: useCallbackDebugger((layer: MapLayer, activate?: boolean) => {
+            dispatch(editBaseLayer({ layer, activate }));
+        }, []),
+
+        // The callback to add an overlay layer.
+        addOverlayLayer: useCallbackDebugger((layer: MapLayer, activate?: boolean) => {
+            dispatch(addOverlayLayer({ layer, activate }));
+        }, []),
+
+        // The callback to remove an overlay layer.
+        removeOverlayLayer: useCallbackDebugger((layerId: string) => {
+            dispatch(removeOverlayLayer(layerId));
+        }, []),
+
+        // The callback to edit an overlay layer.
+        editOverlayLayer: useCallbackDebugger((layer: MapLayer, activate?: boolean) => {
+            dispatch(editOverlayLayer({ layer, activate }));
+        }, []),
+
+        // The callback to reorder a base layer.
+        reorderOverlayLayer: useCallbackDebugger((
+            layer: LayerID,
+            parent: LayerID | undefined,
+            index: number,
+        ) => {
+            dispatch(reorderOverlayLayer({ layer, parent, index }));
+        }, []),
+
+        // The entire state is public.
         ...state
     };
 
+    console.log("[QgisMapController] value: %O", value);
     return (
         <QgisMapContextProvider value={value}>
             {children}

@@ -4,6 +4,7 @@
         "moveend",
         "movestart",
         "openlayers",
-        "singleclick"
+        "singleclick",
+        "textea"
     ]
 }

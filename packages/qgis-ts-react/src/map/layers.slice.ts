@@ -1,39 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { Draft } from "immer";
 import type { PayloadAction } from '@reduxjs/toolkit';
 
-import type { QgisMapState } from './store';
-
-
-/**
- * The unique identifier of the root layer.
- */
-export const ROOT_LAYER_ID = '_ro_ot_';
-
-
-/**
- * The unique identifier of a map layer.
- */
-export type LayerID = string;
-
-
-/**
- * Information about a layer in a map.
- *
- * One such layer may generate 0 or more ol layers.
- */
-export interface MapLayer {
-    /**
-     * The ID of the layer.
-     */
-    id: LayerID;
-
-    /**
-     * The ID of the parent group.
-     */
-    parent?: LayerID;
-}
+import { LayerID, MapLayer, ROOT_LAYER_ID } from '../layers/defs';
 
 
 /**
@@ -199,7 +167,8 @@ export const layersSlice = createSlice({
             }
 
             // Remove it from the flat list.
-            if (state.overlays[action.payload] === undefined) {
+            const existing = state.overlays[action.payload];
+            if (existing === undefined) {
                 throw new Error(`Unknown overlay layer ${action.payload}`);
             }
             delete state.overlays[action.payload];
@@ -216,18 +185,14 @@ export const layersSlice = createSlice({
                 for (const child of children) {
                     layersSlice.caseReducers.removeOverlayLayer(
                         state, {
-                            payload: child,
-                            type: action.type,
-                        }
-                    );
+                        payload: child,
+                        type: action.type,
+                    });
                 }
             }
 
             // Remove it from the tree.
-            const parentId = (
-                state.overlays[action.payload].parent ||
-                ROOT_LAYER_ID
-            );
+            const parentId = existing.parent ||  ROOT_LAYER_ID;
             const lst = state.layerTree[parentId];
             if (!lst) {
                 throw new Error(`Missing layer tree for ${parentId}`);
