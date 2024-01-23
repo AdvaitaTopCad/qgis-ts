@@ -14,10 +14,15 @@
         "skipLibCheck": true,
         "skipDefaultLibCheck": true,
         "baseUrl": ".",
+        "resolveJsonModule": true,
         "paths": {
             "@qgis-ts/core": ["packages/qgis-ts-core/src/index.ts"],
             "@qgis-ts/react": ["packages/qgis-ts-react/src/index.ts"],
-            "@qgis-ts/ui-emotion": ["packages/qgis-ts-emotion/src/index.ts"]
+            "@qgis-ts/ui-emotion": ["packages/qgis-ts-emotion/src/index.ts"],
+            "@vebgen/nxp-g11n": ["plugins/g11n/src/index.ts"],
+            "@vebgen/nxp-make": ["plugins/make/src/index.ts"],
+            "@vebgen/nxp-rollup": ["plugins/rollup/src/index.ts"],
+            "@vebgen/nxp-tools": ["plugins/tools/src/index.ts"]
         }
     },
     "exclude": ["node_modules", "tmp"]

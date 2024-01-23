@@ -49,4 +49,5 @@ Thumbs.db
 .nx/cache
 
 # Others
-playground
+/playground
+/plugins

@@ -47,8 +47,10 @@
             "inputs": [
                 "default",
                 "^production",
-                "!{projectRoot}/.storybook/**/*"
-            ]
+                "{projectRoot}/.storybook/**/*",
+                "{projectRoot}/tsconfig.storybook.json"
+            ],
+            "cache": true
         },
         "e2e": {
             "inputs": ["default", "^production"]
@@ -66,7 +68,8 @@
             "!{projectRoot}/**/*.stories.@(js|jsx|ts|tsx|mdx)",
             "!{projectRoot}/.storybook/**/*",
             "!{projectRoot}/src/test-setup.[jt]s",
-            "!{projectRoot}/test-setup.[jt]s"
+            "!{projectRoot}/test-setup.[jt]s",
+            "!{projectRoot}/tsconfig.storybook.json"
         ],
         "sharedGlobals": ["{workspaceRoot}/babel.config.json"]
     },
