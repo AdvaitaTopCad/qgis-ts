@@ -1,4 +1,4 @@
-import { FC, ReactNode, useCallback, useId, useReducer, useRef } from 'react';
+import { FC, ReactNode, useCallback, useEffect, useId, useReducer, useRef } from 'react';
 import { combineReducers } from 'redux';
 import { IntlShape, useIntl } from 'react-intl';
 
@@ -254,6 +254,15 @@ export const QgisMapController: FC<QgisMapControllerProps> = ({
         mapData.current.mapNode = node;
         createMap(mapData.current, state, initialView);
     }, [intl, state, initialView]);
+
+
+    // Recreate the layers when the internal state changes.
+    useEffect(() => {
+        if (mapData.current.map === null) {
+            return;
+        }
+        // TODO
+    }, [state.layers]);
 
 
     // Compute the value that will be provided through the context.

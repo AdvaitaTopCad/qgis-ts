@@ -3,6 +3,7 @@ import type { StoryFn, Meta } from '@storybook/react';
 import type { QgisMapViewProps } from "./view";
 import { QgisMapView } from "./view";
 import { QgisMapContextProvider } from '@qgis-ts/react';
+import { IntlProvider } from 'react-intl';
 
 
 
@@ -26,11 +27,13 @@ export default storybookConfig;
 // Base for all stories in this file.
 const Template: StoryFn<StoryProps> = () => {
     return (
-        <QgisMapContextProvider value={{
+        <IntlProvider locale="en" onError={() => { }}>
+            <QgisMapContextProvider value={{
 
-        } as any}>
-            <QgisMapView />
-        </QgisMapContextProvider>
+            } as any}>
+                <QgisMapView />
+            </QgisMapContextProvider>
+        </IntlProvider>
     );
 }
 

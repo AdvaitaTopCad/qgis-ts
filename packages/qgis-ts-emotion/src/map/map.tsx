@@ -1,5 +1,6 @@
 import React from 'react';
 import { FC } from 'react';
+import type { QgisMapControllerProps } from '@qgis-ts/react';
 import { QgisMapController } from '@qgis-ts/react';
 
 import { QgisMapView } from '../map-view';
@@ -8,7 +9,7 @@ import { QgisMapView } from '../map-view';
 /**
  * Properties expected by the QGis map component.
  */
-export interface QgisMapProps {
+export interface QgisMapProps extends QgisMapControllerProps {
 
 };
 
@@ -16,11 +17,16 @@ export interface QgisMapProps {
 /**
  * The QGis map component.
  */
-export const QgisMap: FC<QgisMapProps> = (props) => {
+export const QgisMap: FC<QgisMapProps> = ({
+    children,
+    ...rest
+}) => {
 
     return (
-        <QgisMapController>
-            <QgisMapView />
+        <QgisMapController {...rest}>
+            <QgisMapView>
+                {children}
+            </QgisMapView>
         </QgisMapController>
     );
 };

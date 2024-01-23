@@ -2,6 +2,7 @@ import type { StoryFn, Meta } from '@storybook/react';
 
 import type { QgisMapProps } from "./map";
 import { QgisMap } from "./map";
+import { IntlProvider } from 'react-intl';
 
 
 // The properties passed to each story.
@@ -22,7 +23,9 @@ export default storybookConfig;
 // Base for all stories in this file.
 const Template: StoryFn<StoryProps> = () => {
     return (
-        <QgisMap />
+        <IntlProvider locale="en" onError={() => {}}>
+            <QgisMap />
+        </IntlProvider>
     );
 }
 

@@ -58,7 +58,10 @@ const initialState: MapState = {
             bounds: [0, 0, 0, 0],
             rotation: 0,
         },
-        size: [0, 0],
+        size: {
+            width: 0,
+            height: 0,
+        },
     },
 };
 

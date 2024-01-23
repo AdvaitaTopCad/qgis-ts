@@ -22,14 +22,16 @@ const sxDiv = {
  * Properties expected by the QGis map component.
  */
 export interface QgisMapViewProps {
-
+    children?: React.ReactNode;
 };
 
 
 /**
  * The QGis map component.
  */
-export const QgisMapView: FC<QgisMapViewProps> = (props) => {
+export const QgisMapView: FC<QgisMapViewProps> = ({
+    children
+}) => {
     const {
         mapId,
         mapRef
@@ -39,6 +41,8 @@ export const QgisMapView: FC<QgisMapViewProps> = (props) => {
             style={sxDiv}
             id={mapId}
             ref={mapRef}
-        />
+        >
+            {children}
+        </div>
     );
 };
