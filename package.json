@@ -102,6 +102,7 @@
         "includedScripts": []
     },
     "dependencies": {
+        "@mui/icons-material": "^5.15.6",
         "@mui/material": "^5.15.6",
         "@textea/json-viewer": "^3.3.0",
         "ol": "^8.2.0"

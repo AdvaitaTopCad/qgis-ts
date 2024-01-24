@@ -280,15 +280,19 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
 
     // Recreate the layers when the internal state changes.
     useEffectDebugger(() => {
-        console.log('[QgisMapController] recreate layers effect');
         if (mapData.current.map === null) {
             return;
         }
+        console.log('[QgisMapController] recreating layers ...');
         const baseLayer = state.layers.activeBase
             ? state.layers.bases[state.layers.activeBase]
             : undefined;
         GenreRegistry.i.syncLayers(
             mapData.current.map, baseLayer, state.layers.overlays
+        )
+        console.log(
+            '[QgisMapController] after recreating map has %d layers',
+            mapData.current.map.getLayers().getLength()
         )
     }, [state.layers]);
 

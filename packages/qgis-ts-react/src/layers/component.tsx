@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { QgisMapContextProvider, useQgisMapContext } from "../map";
 import { MapLayer } from "./defs";
 
@@ -25,6 +26,11 @@ export interface MapLayerProps<T extends MapLayer> {
     settings?: T;
 
     /**
+     * Whether to activate the layer.
+     */
+    activate?: boolean;
+
+    /**
      * The children of the component (allows for a tree of layers).
      */
     children?: React.ReactNode;
@@ -36,45 +42,65 @@ export interface MapLayerProps<T extends MapLayer> {
  */
 export function MapLayerComp<T extends MapLayer = MapLayer>({
     layerKind = "none",
+    activate,
     settings,
     children
 }: MapLayerProps<T>) {
+    console.log(
+        "[MapLayerComp] rendering layerKind=%O, settings=%O",
+        layerKind, settings
+    );
+
     const upperContext = useQgisMapContext();
     const {
         addOverlayLayer,
+        removeBaseLayer,
+        removeOverlayLayer,
         addBaseLayer,
         groupLayerInTree,
-        layers: {
-            activeOverlay
-        }
     } = upperContext;
 
-    if (layerKind === "none") {
+    // On unmount remove the layer.
+    useEffect(() => {
+        console.log("[MapLayerComp] useEffect");
+        if (layerKind !== "none") {
+            if (!settings) {
+                throw new Error("Missing settings for layer.");
+            }
+
+            // Insert the parent derived from the context.
+            const adjusted = {
+                ...settings,
+                parent: settings.parent || groupLayerInTree
+            }
+
+            if (layerKind === "base") {
+                addBaseLayer(adjusted, activate);
+            } else if (layerKind === "overlay") {
+                addOverlayLayer(adjusted, activate);
+            } else if (layerKind === "group") {
+                addOverlayLayer(adjusted, activate);
+            } else {
+                throw new Error(`Invalid layer kind: ${layerKind}`);
+            }
+        }
+
+        return () => {
+            console.log("[MapLayerComp] unmounting");
+            if (layerKind === "base") {
+                removeBaseLayer(settings!.id!);
+            } else if (layerKind === "overlay") {
+                removeOverlayLayer(settings!.id!);
+            } else if (layerKind === "group") {
+                removeOverlayLayer(settings!.id!);
+            }
+        }
+    }, [settings, activate]);
+
+    if (layerKind === "none" || layerKind === "base") {
         // no need to wrap children in a provider.
         return children as JSX.Element;
-    } else {
-        if (!settings) {
-            throw new Error("Missing settings for layer.");
-        }
-
-        // Insert the parent derived from the context.
-        const adjusted = {
-            ...settings,
-            parent: settings.parent || groupLayerInTree
-        }
-
-        if (layerKind === "base") {
-            addBaseLayer(adjusted);
-            return children;
-        } else if (layerKind === "overlay") {
-            addOverlayLayer(adjusted, !activeOverlay);
-        } else if (layerKind === "group") {
-            addOverlayLayer(adjusted);
-        } else {
-            throw new Error(`Invalid layer kind: ${layerKind}`);
-        }
     }
-
     if (!children) {
         return null;
     }
@@ -82,7 +108,7 @@ export function MapLayerComp<T extends MapLayer = MapLayer>({
     return (
         <QgisMapContextProvider value={{
             ...upperContext,
-            groupLayerInTree: settings.id
+            groupLayerInTree: settings!.id
         }}>
             {children}
         </QgisMapContextProvider>
