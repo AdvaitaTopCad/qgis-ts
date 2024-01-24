@@ -9,7 +9,12 @@ const StyledApp = styled.div`
 export function App() {
     return (
         <StyledApp>
-            <QgisMap />
+            <QgisMap
+                initialView={{
+                    center: [0, 0],
+                    zoom: 1,
+                }}
+            />
         </StyledApp>
     );
 }

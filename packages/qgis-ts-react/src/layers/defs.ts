@@ -1,3 +1,6 @@
+import type { GenreID } from "./genres/base";
+
+
 /**
  * The unique identifier of a map layer.
  */
@@ -20,6 +23,11 @@ export interface MapLayer {
      * The ID of the layer.
      */
     id: LayerID;
+
+    /**
+     * The ID of the genre of this layer.
+     */
+    genre: GenreID;
 
     /**
      * The ID of the parent group.

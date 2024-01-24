@@ -6,7 +6,9 @@ import { MapDebugger } from '@qgis-ts/debug';
 import { IntlProvider } from 'react-intl';
 import { FC, useCallback, useState } from 'react';
 import { useQgisMapContext } from './context';
-
+import "../layers/genres/xyz-raster-tile";
+import "../layers/genres/osm-raster-tile";
+import "../layers/genres/geojson-vector";
 
 // The properties passed to each story.
 type StoryProps = QgisMapControllerProps;
@@ -27,6 +29,49 @@ const mapStyle = {
     width: '100%',
     height: '256px',
     backgroundColor: 'red'
+}
+
+const baseLayerSettings = (i: number) => {
+    const md = i % 3;
+    switch (md) {
+        case 0:
+            return {
+                genre: 'osm-tile-raster',
+                attributions:
+                    'All maps © <a href="https://www.openseamap.org/">' +
+                    'OpenSeaMap</a>',
+                url:
+                    'https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',
+            };
+        case 1:
+            return {
+                genre: 'osm-tile-raster',
+            };
+        case 2:
+            return {
+                genre: 'xyz-tile-raster',
+                attributions:
+                    'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
+                    'rest/services/World_Topo_Map/MapServer">ArcGIS</a>',
+                url:
+                    'https://server.arcgisonline.com/ArcGIS/rest/services/' +
+                    'World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+            }
+    }
+    throw new Error("Invalid mode");
+}
+
+const overlayLayerSettings = (i: number) => {
+    return {
+        genre: 'geojson-vector',
+        vectorOptions: {
+            background: '#1a2b39a0',
+            style: {
+                'fill-color': ['string', ['get', 'COLOR'], '#eee'],
+            },
+        },
+        url: 'https://openlayers.org/data/vector/ecoregions.json',
+    };
 }
 
 const Inner: FC = () => {
@@ -63,10 +108,16 @@ const Inner: FC = () => {
                         onClick={useCallback(() => {
                             if (!toDeleteBase) {
                                 setToDeleteBase(true);
-                                addBaseLayer({ id: 'toDeleteBase' });
+                                addBaseLayer({
+                                    id: 'toDeleteBase',
+                                    ...baseLayerSettings(0),
+                                });
                                 return;
                             } else {
-                                addBaseLayer({ id: 'base' + baseCounter });
+                                addBaseLayer({
+                                    id: 'base' + baseCounter,
+                                    ...baseLayerSettings(baseCounter),
+                                });
                                 setBaseCounter(baseCounter + 1);
                             }
                         }, [baseCounter, toDeleteBase])}
@@ -103,7 +154,7 @@ const Inner: FC = () => {
                             editBaseLayer(
                                 {
                                     id: 'base1',
-                                    opacity: overlayCounter,
+                                    ...baseLayerSettings(overlayCounter),
                                 },
                                 true
                             );
@@ -132,11 +183,15 @@ const Inner: FC = () => {
                         onClick={useCallback(() => {
                             if (!toDeleteOverlay) {
                                 setToDeleteOverlay(true);
-                                addOverlayLayer({ id: 'toDeleteOverlay' });
+                                addOverlayLayer({
+                                    id: 'toDeleteOverlay',
+                                    ...overlayLayerSettings(0),
+                                });
                                 return;
                             } else {
                                 addOverlayLayer({
-                                    id: 'overlay' + overlayCounter
+                                    id: 'overlay' + overlayCounter,
+                                    ...overlayLayerSettings(baseCounter),
                                 });
                                 setOverlayCounter(overlayCounter + 1);
                             }
@@ -174,7 +229,7 @@ const Inner: FC = () => {
                             editOverlayLayer(
                                 {
                                     id: 'overlay1',
-                                    opacity: baseCounter,
+                                    ...overlayLayerSettings(baseCounter),
                                 },
                                 true
                             );

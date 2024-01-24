@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react';
 import { QgisMapState } from './store';
 import { IntlShape } from 'react-intl';
-import { LayerID, MapLayer } from './layers.slice';
+import { LayerID, MapLayer } from '../layers';
 
 
 /**

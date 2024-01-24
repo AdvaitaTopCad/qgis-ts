@@ -8,7 +8,7 @@ import { IntlShape, useIntl } from 'react-intl';
 import OlMap from 'ol/Map';
 import OlView, { ViewOptions } from 'ol/View';
 import { Coordinate } from 'ol/coordinate';
-
+import XYZ from 'ol/source/XYZ';
 import { defaults as olCreateInteractionDefaults } from 'ol/interaction';
 import OlInteractionDoubleClickZoom from 'ol/interaction/DoubleClickZoom';
 import OlInteractionDragPan from 'ol/interaction/DragPan';
@@ -44,6 +44,8 @@ import {
     editOverlayLayer, removeBaseLayer, removeOverlayLayer, reorderOverlayLayer,
     setActiveBaseLayer, setActiveOverlayLayer
 } from './layers.slice';
+import TileLayer from 'ol/layer/Tile';
+import { GenreRegistry } from '../layers';
 
 
 /**
@@ -143,7 +145,18 @@ export function createMap(
     });
 
     data.map = new OlMap({
-        layers: [],
+        layers: [
+            // new TileLayer({
+            //     source: new XYZ({
+            //         attributions:
+            //             'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
+            //             'rest/services/World_Topo_Map/MapServer">ArcGIS</a>',
+            //         url:
+            //             'https://server.arcgisonline.com/ArcGIS/rest/services/' +
+            //             'World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+            //     }),
+            // }),
+        ],
         controls: controls,
         interactions: interactions,
         keyboardEventTarget: document,
@@ -207,7 +220,7 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
     const {
         initialView,
         children
-    }  = props;
+    } = props;
 
     // Our translation provider.
     const intl = useIntl();
@@ -271,7 +284,12 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
         if (mapData.current.map === null) {
             return;
         }
-        // TODO
+        const baseLayer = state.layers.activeBase
+            ? state.layers.bases[state.layers.activeBase]
+            : undefined;
+        GenreRegistry.i.syncLayers(
+            mapData.current.map, baseLayer, state.layers.overlays
+        )
     }, [state.layers]);
 
 

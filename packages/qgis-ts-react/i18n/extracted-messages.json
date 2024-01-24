@@ -1,2 +1,12 @@
 {
+  "map": {
+    "rotation": {
+      "reset": {
+        "__id__": "map.rotation.reset",
+        "defaultMessage": "Reset rotation",
+        "en": "Reset rotation",
+        "ro": "Reset rotation"
+      }
+    }
+  }
 }
