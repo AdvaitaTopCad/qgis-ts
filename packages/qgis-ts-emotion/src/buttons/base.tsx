@@ -1,4 +1,4 @@
-import { FC, ReactNode } from "react"
+import { FC, ReactNode, forwardRef } from "react"
 import IconButton, { IconButtonProps } from '@mui/material/IconButton';
 import { Tooltip } from "@mui/material";
 
@@ -27,13 +27,13 @@ export interface BaseButtonProps extends IconButtonProps {
 /**
  * Common wrapper for all icon-buttons shown on top of the map.
  */
-export const BaseButton: FC<BaseButtonProps> = ({
+export const BaseButton: FC<BaseButtonProps> = forwardRef(({
     children,
     tooltip,
     leaveDelay,
     enterDelay,
     ...rest
-}) => tooltip ? (
+}, ref) => tooltip ? (
     <Tooltip
         arrow
         title={tooltip}
@@ -41,7 +41,12 @@ export const BaseButton: FC<BaseButtonProps> = ({
         enterNextDelay={enterDelay}
         leaveDelay={leaveDelay}
     >
-        <IconButton color="primary" size="small" {...rest}>
+        <IconButton
+            color="primary"
+            size="small"
+            ref={ref}
+            {...rest}
+        >
             {children}
         </IconButton>
     </Tooltip>
@@ -50,3 +55,4 @@ export const BaseButton: FC<BaseButtonProps> = ({
             {children}
         </IconButton>
     )
+);

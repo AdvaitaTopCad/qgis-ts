@@ -25,6 +25,11 @@ export interface MapLayer {
     id: LayerID;
 
     /**
+     * The label of the layer.
+     */
+    title: LayerID;
+
+    /**
      * The ID of the genre of this layer.
      */
     genre: GenreID;

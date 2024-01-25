@@ -25,7 +25,7 @@ type Props = Omit<BaseButtonProps, "children">
 /**
  * The internal data.
  */
-interface GeolocationData {
+export interface GeolocationData {
     /**
      * The map where the button is.
      */
