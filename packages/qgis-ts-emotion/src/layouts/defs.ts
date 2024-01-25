@@ -1,5 +1,6 @@
 import { CSSProperties } from "react";
 
+
 /**
  * The size of the component in pixels.
  */
@@ -9,7 +10,7 @@ export const barSize: number = 36;
 /**
  * The predefined Z-Index values.
  */
-export enum ZIndex {
+export const enum ZIndex {
     /**
      * The Z-Index of the bar.
      */

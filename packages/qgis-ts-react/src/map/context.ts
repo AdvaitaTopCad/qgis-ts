@@ -1,3 +1,4 @@
+import OlMap from 'ol/Map';
 import { createContext, useContext } from 'react';
 import { QgisMapState } from './store';
 import { IntlShape } from 'react-intl';
@@ -8,6 +9,12 @@ import { LayerID, MapLayer } from '../layers';
  * The data that is stored in context for each map.
  */
 export interface QgisMapContext extends QgisMapState {
+
+    /**
+     * The map openlayers instance.
+     */
+    olMap: OlMap | null;
+
     /**
      * The id of the div element that contains the map.
      */

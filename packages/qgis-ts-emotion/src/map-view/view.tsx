@@ -47,6 +47,7 @@ export const QgisMapView: FC<QgisMapViewProps> = ({
     } = useQgisMapContext()
     return (
         <div
+            tabIndex={0}
             style={style}
             id={mapId}
             ref={mapRef}

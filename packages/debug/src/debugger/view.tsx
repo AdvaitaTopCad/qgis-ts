@@ -37,12 +37,12 @@ const isExpanded = (path: (string | number)[], currentValue: any) => (
  * Present the content of the form.
  */
 export function MapDebugger() {
-    const data = useQgisMapContext();
+    const {olMap, ...rest} = useQgisMapContext();
     return (
         <div style={formStyle}>
             <JsonViewer
                 rootName="Map State"
-                value={data}
+                value={rest}
                 valueTypes={[functionDataType, symbolDataType]}
                 defaultInspectControl={isExpanded}
             />

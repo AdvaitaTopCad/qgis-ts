@@ -4,13 +4,21 @@ import type { QgisMapProps } from "./map";
 import { QgisMap } from "./map";
 import { IntlProvider } from 'react-intl';
 import { MapLayerComp } from 'packages/qgis-ts-react/src/layers';
-import { MapDebugger } from '@qgis-ts/debug';
+import { MapDebugger, MapDebuggerDialogBtn } from '@qgis-ts/debug';
 import IconButton from '@mui/material/IconButton';
 import HomeIcon from '@mui/icons-material/Home';
 import BuildIcon from '@mui/icons-material/Build';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AlarmIcon from '@mui/icons-material/Alarm';
 import { Divider } from '@mui/material';
+import { RightBar } from '../layouts';
+import { HomeButton } from '../buttons/home';
+import { ZoomInButton } from '../buttons/zoom-in';
+import { ZoomOutButton } from '../buttons/zoom-out';
+import { BaseLayersButton } from '../buttons/base-layers';
+import { MyLocation } from '@mui/icons-material';
+import { MyLocationButton } from '../buttons/my-loc';
+import { OverlayLayersButton } from '../buttons/overlay-layers';
 
 // The properties passed to each story.
 type StoryProps = QgisMapProps;
@@ -30,9 +38,9 @@ export default storybookConfig;
 // The style we use for the inner div.
 const sxDiv = {
     width: '100%',
-    height: '300px',
+    height: '700px',
     minWidth: '100px',
-    minHeight: '300px',
+    minHeight: '200px',
     // We need this so that we can position the map controls.
     position: 'relative' as const,
     overflow: 'hidden' as const,
@@ -62,48 +70,15 @@ const Template: StoryFn<StoryProps> = () => {
                         }}
                     />
                 </MapLayerComp>
-                {/* <MapDebugger /> */}
-                <div
-                    style={{
-                        position: 'absolute',
-                        bottom: 0,
-                        right: 0,
-                        //width: '50px',
-                        top: 0,
-                        backgroundColor: 'transparent',
-                        zIndex: 1000,
-                        display: "flex",
-                        flexDirection: "column-reverse",
-                        flexWrap: "wrap",
-                        justifyContent: "center",
-                    }}
-                >
-                    <IconButton aria-label="delete" color="primary" size="small">
-                        <HomeIcon />
-                    </IconButton>
-                    <IconButton aria-label="delete" color="primary" size="small">
-                        <BuildIcon />
-                    </IconButton>
-                    <Divider />
-                    <IconButton aria-label="delete" color="primary" size="small">
-                        <AlarmIcon />
-                    </IconButton>
-                    <IconButton aria-label="delete" color="primary" size="small">
-                        <DeleteIcon />
-                    </IconButton>
-                    {/* <IconButton aria-label="delete" color="primary">
-                        <HomeIcon />
-                    </IconButton>
-                    <IconButton aria-label="delete" color="primary">
-                        <BuildIcon />
-                    </IconButton>
-                    <IconButton aria-label="delete" color="primary">
-                        <AlarmIcon />
-                    </IconButton>
-                    <IconButton aria-label="delete" color="primary">
-                        <AddShoppingCartIcon />
-                    </IconButton> */}
-                </div>
+                <RightBar>
+                    <MapDebuggerDialogBtn />
+                    <ZoomOutButton />
+                    <ZoomInButton />
+                    <BaseLayersButton />
+                    <OverlayLayersButton />
+                    <MyLocationButton />
+                    <HomeButton />
+                </RightBar>
             </QgisMap>
         </IntlProvider>
     );

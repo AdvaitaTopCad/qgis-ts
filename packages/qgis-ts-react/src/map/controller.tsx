@@ -29,7 +29,7 @@ import OlInteractionSnap from 'ol/interaction/Snap';
 // import OlInteractionTransform from 'ol-ext/interaction/Transform';
 import OlInteractionTranslate from 'ol/interaction/Translate';
 
-import { defaults as olCreateControlDefaults } from 'ol/control';
+import { FullScreen, defaults as olCreateControlDefaults } from 'ol/control';
 import OlControlOverviewMap from 'ol/control/OverviewMap';
 import OlControlScaleLine from 'ol/control/ScaleLine';
 import OlControlZoom from 'ol/control/Zoom';
@@ -131,8 +131,10 @@ export function createMap(
     interactions.extend([
         new OlInteractionDragPan({ kinetic: undefined }),
         new OlInteractionMouseWheelZoom(mouseState),
-        new OlInteractionKeyboardZoom()
+        new OlInteractionKeyboardZoom(),
+        new OlInteractionKeyboardPan(),
     ]);
+
     const controls = olCreateControlDefaults({
         zoom: false,
         attribution: false,
@@ -145,21 +147,10 @@ export function createMap(
     });
 
     data.map = new OlMap({
-        layers: [
-            // new TileLayer({
-            //     source: new XYZ({
-            //         attributions:
-            //             'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
-            //             'rest/services/World_Topo_Map/MapServer">ArcGIS</a>',
-            //         url:
-            //             'https://server.arcgisonline.com/ArcGIS/rest/services/' +
-            //             'World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
-            //     }),
-            // }),
-        ],
-        controls: controls,
+        layers: [],
+        controls: [],
         interactions: interactions,
-        keyboardEventTarget: document,
+        keyboardEventTarget: data.mapNode as HTMLElement,
         view: new OlView(initialView)
     });
 
@@ -232,7 +223,13 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
 
     // The internal state of the map.
     const [state, dispatch] = useReducer(
-        combineReducers(reducerObject), initialState
+        combineReducers(reducerObject), initialState, () => ({
+            ...initialState,
+            map: {
+                ...initialState.map,
+                homeView: initialView
+            }
+        })
     );
 
 
@@ -302,6 +299,7 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
         mapId,
         mapRef,
         intl,
+        olMap: mapData.current.map,
 
         // The current parent layer used to construct the tree.
         groupLayerInTree: ROOT_LAYER_ID,

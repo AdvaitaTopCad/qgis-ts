@@ -7,6 +7,7 @@ import type { QgisMapState } from './store';
 import { Extent } from 'ol/extent';
 import { Size } from 'ol/size';
 import { Coordinate } from 'ol/coordinate';
+import { ViewOptions } from 'ol/View';
 
 
 /**
@@ -46,7 +47,7 @@ export interface ViewState {
  */
 export interface MapState {
     view: ViewState;
-
+    homeView: ViewOptions;
 };
 
 
@@ -63,6 +64,11 @@ const initialState: MapState = {
             height: 0,
         },
     },
+    homeView: {
+        center: [0, 0],
+        zoom: 0,
+        rotation: 0,
+    },
 };
 
 
@@ -76,12 +82,16 @@ export const mapSlice = createSlice({
         setMapView: (state, action: PayloadAction<ViewState>) => {
             state.view = action.payload;
         },
+        setHomeView: (state, action: PayloadAction<ViewOptions>) => {
+            state.homeView = action.payload;
+        }
     },
 });
 
 
 export const {
-    setMapView
+    setMapView,
+    setHomeView,
 } = mapSlice.actions;
 
 

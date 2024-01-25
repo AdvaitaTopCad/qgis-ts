@@ -254,6 +254,7 @@ const Inner: FC = () => {
                 </Box>
             </Box>
             <div
+                tabIndex={0}
                 id={mapId}
                 ref={mapRef}
                 style={mapStyle}
