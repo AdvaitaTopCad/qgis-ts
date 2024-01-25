@@ -3,3 +3,6 @@ export type { DebugDialogProps } from "./debugger";
 
 
 export { MapDebugController } from './controller';
+
+
+export { SimpleMap } from './map';

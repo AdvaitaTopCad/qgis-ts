@@ -1,5 +1,4 @@
-import React, { CSSProperties } from 'react';
-import { FC } from 'react';
+import React, { CSSProperties, FC } from 'react';
 import { useQgisMapContext } from '@qgis-ts/react';
 
 

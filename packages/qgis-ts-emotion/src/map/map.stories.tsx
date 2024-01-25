@@ -3,7 +3,6 @@ import type { StoryFn, Meta } from '@storybook/react';
 import type { QgisMapProps } from "./map";
 import { QgisMap } from "./map";
 import { IntlProvider } from 'react-intl';
-import { MapLayerComp } from 'packages/qgis-ts-react/src/layers';
 import { MapDebugger, MapDebuggerDialogBtn } from '@qgis-ts/debug';
 import IconButton from '@mui/material/IconButton';
 import HomeIcon from '@mui/icons-material/Home';
@@ -19,6 +18,7 @@ import { BaseLayersButton } from '../buttons/base-layers';
 import { MyLocation } from '@mui/icons-material';
 import { MyLocationButton } from '../buttons/my-loc';
 import { OverlayLayersButton } from '../buttons/overlay-layers';
+import { MapLayerComp } from '@qgis-ts/react';
 
 // The properties passed to each story.
 type StoryProps = QgisMapProps;

@@ -1,9 +1,7 @@
 import type { StoryFn, Meta } from '@storybook/react';
-import { MapDebugController, MapDebugger } from '@qgis-ts/debug';
+import { SimpleMap } from '@qgis-ts/debug';
 
-import { QgisMapView } from '../map-view';
 import { BaseButtonProps } from './base';
-import { RightBar } from '../layouts';
 import { OverlayLayersButton } from './overlay-layers';
 
 
@@ -26,14 +24,9 @@ export default storybookConfig;
 // Base for all stories in this file.
 const Template: StoryFn<StoryProps> = (props) => {
     return (
-        <MapDebugController>
-            <QgisMapView>
-                <RightBar>
-                    <OverlayLayersButton {...props} />
-                </RightBar>
-            </QgisMapView>
-            <MapDebugger />
-        </MapDebugController>
+        <SimpleMap>
+            <OverlayLayersButton {...props} />
+        </SimpleMap>
     );
 }
 

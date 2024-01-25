@@ -10,5 +10,17 @@ export {
 } from './map';
 
 
-export type { LayerID, MapLayer } from './layers';
-export { ROOT_LAYER_ID } from './layers';
+export type {
+    LayerID, MapLayer,
+    MapLayerProps,
+    GenreID
+} from './layers';
+export {
+    ROOT_LAYER_ID,
+    MapLayerComp,
+    LayerGenre, GenreRegistry
+} from './layers';
+
+
+export type { QgisMapViewProps } from './map-view';
+export { QgisMapView } from './map-view';

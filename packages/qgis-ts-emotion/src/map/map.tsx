@@ -2,8 +2,7 @@ import React, { CSSProperties } from 'react';
 import { FC } from 'react';
 import type { QgisMapControllerProps } from '@qgis-ts/react';
 import { QgisMapController } from '@qgis-ts/react';
-
-import { QgisMapView } from '../map-view';
+import { QgisMapView } from '@qgis-ts/react';
 
 
 /**

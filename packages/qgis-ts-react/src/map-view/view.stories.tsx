@@ -1,9 +1,9 @@
 import type { StoryFn, Meta } from '@storybook/react';
+import { QgisMapContextProvider } from '@qgis-ts/react';
+import { IntlProvider } from 'react-intl';
 
 import type { QgisMapViewProps } from "./view";
 import { QgisMapView } from "./view";
-import { QgisMapContextProvider } from '@qgis-ts/react';
-import { IntlProvider } from 'react-intl';
 
 
 

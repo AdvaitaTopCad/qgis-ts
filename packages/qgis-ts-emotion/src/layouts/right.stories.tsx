@@ -5,11 +5,11 @@ import BuildIcon from '@mui/icons-material/Build';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AlarmIcon from '@mui/icons-material/Alarm';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import { MapDebugController } from '@qgis-ts/debug';
+import { QgisMapView } from '@qgis-ts/react';
 
 import { BarProps } from './defs';
 import { RightBar } from './right';
-import { MapDebugController } from '@qgis-ts/debug';
-import { QgisMapView } from '../map-view';
 import { LeftBar } from './left';
 import { TopBar } from './top';
 import { BottomBar } from './bottom';

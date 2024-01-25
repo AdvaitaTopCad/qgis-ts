@@ -1,10 +1,9 @@
 import type { StoryFn, Meta } from '@storybook/react';
-import { MapDebugController, MapDebugger } from '@qgis-ts/debug';
+import { SimpleMap } from '@qgis-ts/debug';
 
-import { QgisMapView } from '../map-view';
 import { HomeButton } from './home';
 import { BaseButtonProps } from './base';
-import { RightBar } from '../layouts';
+
 
 
 // The properties passed to each story.
@@ -26,14 +25,9 @@ export default storybookConfig;
 // Base for all stories in this file.
 const Template: StoryFn<StoryProps> = (props) => {
     return (
-        <MapDebugController>
-            <QgisMapView>
-                <RightBar>
-                    <HomeButton {...props} />
-                </RightBar>
-            </QgisMapView>
-            <MapDebugger />
-        </MapDebugController>
+        <SimpleMap>
+            <HomeButton {...props} />
+        </SimpleMap>
     );
 }
 
