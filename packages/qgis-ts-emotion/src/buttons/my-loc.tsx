@@ -1,4 +1,5 @@
 import { FC, ReactNode, useCallback, useEffect, useRef, useState } from "react";
+import OlMap from "ol/Map";
 import Feature from 'ol/Feature.js';
 import Geolocation, { GeolocationError } from 'ol/Geolocation.js';
 import Point from 'ol/geom/Point.js';
@@ -7,11 +8,13 @@ import { Vector as VectorSource } from 'ol/source.js';
 import { Vector as VectorLayer } from 'ol/layer.js';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import { useQgisMapContext } from "@qgis-ts/react";
-import { FormattedMessage, IntlShape, useIntl } from "react-intl";
+import { IntlShape, useIntl } from "react-intl";
 import {
+    Box,
     Paper, Table, TableBody, TableCell, TableContainer,
-    TableRow, Tooltip, Typography
+    TableRow, Typography
 } from "@mui/material";
+import WarningIcon from '@mui/icons-material/Warning';
 
 import { BaseButton, BaseButtonProps } from "./base";
 
@@ -23,11 +26,47 @@ type Props = Omit<BaseButtonProps, "children">
  * The internal data.
  */
 interface GeolocationData {
+    /**
+     * The map where the button is.
+     */
+    olMap: OlMap | null,
+
+    /**
+     * The geolocation object.
+     */
     geolocation: Geolocation | null;
+
+    /**
+     * The internationalization object.
+     */
     intl: IntlShape;
+
+    /**
+     * The feature used to draw the accuracy marker.
+     */
     accuracyFeature?: Feature;
+
+    /**
+     * The feature used to draw the position marker.
+     */
     positionFeature?: Feature;
+
+    /**
+     * The layer used to draw the accuracy and position markers.
+     */
     layer: VectorLayer<VectorSource> | null;
+
+    /**
+     * True if the layer is in the map.
+     */
+    layerInMap: boolean;
+
+    /**
+     * When the location is activated we set this to true.
+     * Then, when the first location arrive we zoom to it and set this to
+     * false so that we don't zoom again.
+     */
+    oneJumpOnly: boolean;
 }
 
 
@@ -110,6 +149,9 @@ export const AltitudeRow: FC<GeolocationData> = ({
 }) => {
     const altitude = geolocation!.getAltitude();
     const accuracy = geolocation!.getAltitudeAccuracy();
+    if (altitude === undefined) {
+        return null;
+    }
     return (
         <Row
             title={
@@ -138,6 +180,9 @@ export const HeadingRow: FC<GeolocationData> = ({
     geolocation, intl
 }) => {
     const heading = geolocation!.getHeading();
+    if (heading === undefined) {
+        return null;
+    }
     return (
         <Row
             title={
@@ -163,6 +208,9 @@ export const SpeedRow: FC<GeolocationData> = ({
     geolocation, intl
 }) => {
     const speed = geolocation!.getSpeed();
+    if (speed === undefined) {
+        return null;
+    }
     return (
         <Row
             title={
@@ -202,10 +250,11 @@ export const GeolocationTable: FC<GeolocationData> = (props) => {
 
 
 const sxError = {
-    color: "error.main",
+    color: "error.light",
     textAlign: "center" as const,
     fontSize: "0.75rem",
     lineHeight: "1rem",
+    p: 0.5,
     mt: 0.5,
     mb: 0.5,
 }
@@ -237,17 +286,24 @@ export const ErrorMessage: FC<{
         message = error.message;
     }
     return (
-        <Typography variant="body2" sx={sxError}>
-            {message}
-        </Typography>
+        <Box display="flex" flexDirection="row" alignItems="center">
+            <WarningIcon color="error" />
+            <Typography variant="body2" sx={sxError}>
+                {message}
+            </Typography>
+        </Box>
     );
 }
 
 
 /**
  * Navigates to the location of the user.
+ *
+ * https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition
  */
 export const MyLocationButton: FC<Props> = (props) => {
+    console.log("[MyLocationButton] render");
+
     // Internationalization provider.
     const intl = useIntl();
 
@@ -268,14 +324,19 @@ export const MyLocationButton: FC<Props> = (props) => {
 
     // Other data is saved here.
     const data = useRef<GeolocationData>({
+        olMap,
         geolocation: null,
         intl,
         layer: null,
+        layerInMap: false,
+        oneJumpOnly: false,
     });
 
     // On first render set it up.
     useEffect(() => {
         if (!olMap) return;
+        console.log("[MyLocationButton] setting up");
+
         const view = olMap.getView();
 
         // Create the wrapper for HTML5 Geolocation capabilities.
@@ -285,16 +346,19 @@ export const MyLocationButton: FC<Props> = (props) => {
                 // enableHighAccuracy must be set to true to have
                 // the heading value.
                 enableHighAccuracy: true,
-                // maximumAge: number;
-                // timeout?: number;
+                // https://stackoverflow.com/q/3752383/1742064
+                maximumAge: Infinity,
+                timeout: 5000,
             },
             // Do not start tracking right away.
             tracking: false,
         });
         data.current.geolocation = geolocation;
+        console.log("[MyLocationButton] geolocation created: %O", geolocation);
 
         // update the tooltip when the position changes.
         geolocation.on('change', function () {
+            console.log("[MyLocationButton] geolocation change");
             setError(null);
             setTooltip(
                 <GeolocationTable {...data.current} />
@@ -303,6 +367,7 @@ export const MyLocationButton: FC<Props> = (props) => {
 
         // handle geolocation error.
         geolocation.on('error', function (error) {
+            console.log("[MyLocationButton] geolocation error: %O", error);
             setError(error.message);
             setTooltip(<ErrorMessage error={error} intl={intl} />);
         });
@@ -342,8 +407,11 @@ export const MyLocationButton: FC<Props> = (props) => {
             // Update the feature when we have new position data.
             const coordinates = geolocation.getPosition();
             if (coordinates) {
-                view.setCenter(coordinates);
-                view.setZoom(17);
+                if (data.current.oneJumpOnly) {
+                    data.current.oneJumpOnly = false;
+                    view.setCenter(coordinates);
+                    view.setZoom(17);
+                }
                 positionFeature.setGeometry(new Point(coordinates));
             } else {
                 positionFeature.setGeometry(undefined);
@@ -357,45 +425,74 @@ export const MyLocationButton: FC<Props> = (props) => {
 
         // Create the vector source and layer.
         data.current.layer = new VectorLayer({
-            map: olMap,
             source: new VectorSource({
                 features: [accuracyFeature, positionFeature],
             }),
         });
 
+        // olMap!.addLayer(data.current.layer!);
+
         return () => {
-            if (data.current.layer) {
+            console.log("[MyLocationButton] tearing down");
+            if (olMap && data.current.layer && data.current.layerInMap) {
                 olMap.removeLayer(data.current.layer);
                 data.current.layer = null;
+                data.current.layerInMap = false;
             }
         }
-    }, []);
+    }, [olMap]);
 
     // Click handler.
     const handleClick = useCallback(() => {
+        console.log("[MyLocationButton] click");
         setError(null);
         setTracking((prev) => {
-            if (!olMap) return prev;
-            if (!data.current.geolocation) return prev;
-            const result = !prev;
-
-            // Toggle tracking.
-            data.current.geolocation.setTracking(result);
-
+            let result;
+            if (!olMap) {
+                result = false;
+                console.log("[MyLocationButton] click without map");
+            } else if (!data.current.geolocation) {
+                result = false;
+                console.log("[MyLocationButton] click without geolocation");
+            } else {
+                result = !prev;
+                data.current.geolocation.setTracking(result);
+                console.log("[MyLocationButton] tracking: %O", result);
+            }
+            if (result) {
+                data.current.oneJumpOnly = true;
+                olMap!.addLayer(data.current.layer!);
+                data.current.layerInMap = true;
+                console.log(
+                    "[MyLocationButton] the layer was added to the map" +
+                    "geolocation is %O", data.current.geolocation
+                );
+            } else if (olMap && data.current.layer && data.current.layerInMap) {
+                olMap.removeLayer(data.current.layer);
+                data.current.layerInMap = false;
+                console.log(
+                    "[MyLocationButton] the layer was removed from the map"
+                );
+                setTooltip(intl.formatMessage({
+                    id: "map.buttons.my-loc.tooltip",
+                    defaultMessage: "Click to navigate to your location.",
+                }));
+            }
             return result;
         });
-    }, []);
+    }, [olMap]);
 
     return (
-        <Tooltip title={tooltip}>
-            <BaseButton
-                {...props}
-                color={error ? "error" : (tracking ? "success" : "primary")}
-                disabled={!olMap}
-                onClick={handleClick}
-            >
-                <MyLocationIcon />
-            </BaseButton>
-        </Tooltip>
+        <BaseButton
+            {...props}
+            color={error ? "error" : (tracking ? "success" : "primary")}
+            disabled={!olMap}
+            onClick={handleClick}
+            tooltip={tooltip}
+            leaveDelay={typeof tooltip === "string" ? 200 : 2000}
+            enterDelay={typeof tooltip === "string" ? 1000 : 500}
+        >
+            <MyLocationIcon />
+        </BaseButton>
     )
 }
