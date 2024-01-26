@@ -1,3 +1,7 @@
+export type { ScaleBarProps } from './controls';
+export { ScaleBar } from './controls';
+
+
 export type {
     QgisMapContext,
     QgisMapControllerProps

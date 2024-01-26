@@ -21,7 +21,7 @@ export interface OverlayTreeProps {
 };
 
 
-interface CreateProps<> {
+interface CreateProps<MapLayer> {
     parentId: string | null;
     parentNode: NodeApi<MapLayer> | null;
     index: number;
@@ -62,7 +62,9 @@ export const OverlayTree: FC<OverlayTreeProps> = ({
     } } = useQgisMapContext();
 
     // The callback for creating a new layer or group.
-    const onCreate = useCallback(({ parentId, index, type }: CreateProps) => {
+    const onCreate = useCallback(({
+        parentId, index, type
+    }: CreateProps<MapLayer>) => {
         const id = uuidv4();
         return {
             id,

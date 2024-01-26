@@ -1,6 +1,7 @@
 import { FC } from "react";
-import { BottomBar, LeftBar, MapLayerComp, QgisMapController, QgisMapControllerProps, QgisMapView, RightBar, TopBar } from "@qgis-ts/react";
+import { BottomBar, LeftBar, MapLayerComp, QgisMapController, QgisMapControllerProps, QgisMapView, RightBar, ScaleBar, TopBar } from "@qgis-ts/react";
 import { BaseLayersButton, FullScreenSwitcher, HomeButton, MyLocationButton, OverlayLayersButton, ZoomInButton, ZoomOutButton } from "../buttons";
+import { QgisAppBar } from "../components";
 
 
 /**
@@ -36,9 +37,12 @@ export const QgisStandardApp: FC<QgisStandardAppProps> = ({
 }) => {
     return (
         <QgisMapController {...rest}>
+            <QgisAppBar />
             <QgisMapView style={viewStyle}>
-                <FullScreenSwitcher side="br" />
-                <BottomBar />
+                <FullScreenSwitcher side="tr" />
+                <BottomBar>
+                    <ScaleBar />
+                </BottomBar>
                 <LeftBar />
                 <RightBar>
                     <ZoomOutButton />

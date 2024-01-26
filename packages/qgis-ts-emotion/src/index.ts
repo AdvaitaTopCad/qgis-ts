@@ -18,6 +18,8 @@ export type {
     OverlayTreeProps,
 } from './components';
 export {
+    QgisAppBar,
+
     BackgroundCard,
     BackgroundContainer,
     BackgroundContent,

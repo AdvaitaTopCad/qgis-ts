@@ -1,6 +1,7 @@
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import { QgisStandardApp } from '@qgis-ts/ui-emotion';
 import { IntlProvider } from 'react-intl';
+import 'ol/ol.css';
 
 const theme = createTheme({
     components: {

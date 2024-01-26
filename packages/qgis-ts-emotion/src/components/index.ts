@@ -1,3 +1,5 @@
+export { QgisAppBar } from './app-bar';
+
 export type {
     BackgroundCardProps,
     BackgroundContainerProps,
