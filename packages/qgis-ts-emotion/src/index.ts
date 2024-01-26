@@ -10,6 +10,9 @@ export type {
     BackgroundCardProps,
     BackgroundContainerProps,
     BackgroundContentProps,
+
+    GeolocationData,
+    UseGeolocationResult,
 } from './components';
 export {
     BackgroundCard,
@@ -18,4 +21,14 @@ export {
     backgroundCardWidth,
     backgroundCardHeight,
     backgroundCardMargin,
+
+    GeolocationAccuracyRow,
+    GeolocationAltitudeRow,
+    GeoLocationRow,
+    GeolocationErrorMessage,
+    GeolocationHeadingRow,
+    GeolocationPositionRow,
+    GeolocationSpeedRow,
+    GeolocationTable,
+    useGeolocation,
 } from './components';
