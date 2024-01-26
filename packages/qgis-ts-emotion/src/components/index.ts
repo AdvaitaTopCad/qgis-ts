@@ -1,16 +1,8 @@
-export type { QgisMapProps } from './map';
-export { QgisMap } from './map';
-
-
-export type { QgisStandardAppProps } from './standard-app';
-export { QgisStandardApp } from './standard-app';
-
-
 export type {
     BackgroundCardProps,
     BackgroundContainerProps,
     BackgroundContentProps,
-} from './components';
+} from './background-switch';
 export {
     BackgroundCard,
     BackgroundContainer,
@@ -18,4 +10,4 @@ export {
     backgroundCardWidth,
     backgroundCardHeight,
     backgroundCardMargin,
-} from './components';
+} from './background-switch';

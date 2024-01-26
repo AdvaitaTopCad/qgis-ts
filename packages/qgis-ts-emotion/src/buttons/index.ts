@@ -1,4 +1,3 @@
-export type { BaseCardProps } from './base-layers';
 export { BaseLayersButton } from './base-layers';
 
 export type { BaseButtonProps } from './base';
