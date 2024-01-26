@@ -1,0 +1,1 @@
+export { changeZoom } from './zoom';

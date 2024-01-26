@@ -11,6 +11,6 @@ export { MyLocationButton } from './my-loc';
 
 export { OverlayLayersButton } from './overlay-layers';
 
-export { ZoomInButton, changeZoom } from './zoom-in';
+export { ZoomInButton } from './zoom-in';
 
 export { ZoomOutButton } from './zoom-out';

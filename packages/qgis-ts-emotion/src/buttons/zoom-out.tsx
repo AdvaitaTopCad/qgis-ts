@@ -1,10 +1,11 @@
 import { FC } from "react"
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
-
-import { BaseButton, BaseButtonProps } from "./base";
 import { useQgisMapContext } from "@qgis-ts/react";
-import { changeZoom, deltaStep } from "./zoom-in";
 import { useIntl } from "react-intl";
+
+import { deltaStep } from "./zoom-in";
+import { BaseButton, BaseButtonProps } from "./base";
+import { changeZoom } from "@qgis-ts/core";
 
 
 /**
