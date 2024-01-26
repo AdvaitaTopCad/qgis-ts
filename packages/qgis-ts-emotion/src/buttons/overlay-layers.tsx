@@ -4,7 +4,7 @@ import AccountTreeIcon from '@mui/icons-material/AccountTree';
 import { BaseButton, BaseButtonProps } from "./base";
 import { useQgisMapContext } from "@qgis-ts/react";
 import { useIntl } from "react-intl";
-import { OverlayContainer } from "../components";
+import { OverlayContainer, OverlayTree } from "../components";
 
 
 /**
@@ -75,7 +75,7 @@ export const OverlayLayersButton: FC<Omit<BaseButtonProps, "children">> = (
                 bottom={bottom}
                 right={right}
             >
-
+                <OverlayTree />
             </OverlayContainer>
         </>
     )

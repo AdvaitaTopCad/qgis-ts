@@ -15,6 +15,7 @@ export type {
     UseGeolocationResult,
 
     OverlayContainerProps,
+    OverlayTreeProps,
 } from './components';
 export {
     BackgroundCard,
@@ -35,4 +36,5 @@ export {
     useGeolocation,
 
     OverlayContainer,
+    OverlayTree,
 } from './components';

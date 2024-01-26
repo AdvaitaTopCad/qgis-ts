@@ -75,7 +75,10 @@ export const layersSlice = createSlice({
         },
 
         addBaseLayer: (
-            state, action: PayloadAction<{ layer: MapLayer, activate?: boolean }>
+            state, action: PayloadAction<{
+                layer: MapLayer,
+                activate?: boolean
+            }>
         ) => {
             const layer = action.payload.layer;
             if (state.bases[layer.id] !== undefined) {
@@ -126,6 +129,7 @@ export const layersSlice = createSlice({
             state, action: PayloadAction<{
                 layer: MapLayer,
                 activate?: boolean,
+                index?: number,
             }>
         ) => {
             const layer = action.payload.layer;
@@ -192,7 +196,7 @@ export const layersSlice = createSlice({
             }
 
             // Remove it from the tree.
-            const parentId = existing.parent ||  ROOT_LAYER_ID;
+            const parentId = existing.parent || ROOT_LAYER_ID;
             const lst = state.layerTree[parentId];
             if (!lst) {
                 throw new Error(`Missing layer tree for ${parentId}`);

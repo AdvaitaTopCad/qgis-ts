@@ -31,7 +31,9 @@ export {
 
 export type {
     OverlayContainerProps,
+    OverlayTreeProps,
 } from './layer-tree';
 export {
     OverlayContainer,
+    OverlayTree
 } from './layer-tree';

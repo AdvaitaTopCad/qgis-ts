@@ -35,8 +35,11 @@ export const OverlayContainer = styled('div', {
     return ({
         backgroundColor: theme.palette.background.paper,
         position: "absolute",
+        borderRadius: 4,
+        boxShadow: "10px 10px 10px -4px lightblue",
         minWidth: 100,
         minHeight: 100,
+        padding: 2,
 
         // This assumes that the button is placed on the right side of the map.
         bottom,

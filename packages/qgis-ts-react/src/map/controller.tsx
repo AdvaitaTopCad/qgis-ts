@@ -1,9 +1,6 @@
 import {
     FC, ReactNode, useCallback, useEffect, useId, useReducer, useRef
 } from 'react';
-import {
-    useEffectDebugger, useCallbackDebugger, useLogChanges
-} from 'use-debugger-hooks';
 import { combineReducers } from 'redux';
 import { IntlShape, useIntl } from 'react-intl';
 import fscreen from 'fscreen';
@@ -11,7 +8,6 @@ import fscreen from 'fscreen';
 import OlMap from 'ol/Map';
 import OlView, { ViewOptions } from 'ol/View';
 import { Coordinate } from 'ol/coordinate';
-import XYZ from 'ol/source/XYZ';
 import { defaults as olCreateInteractionDefaults } from 'ol/interaction';
 import OlInteractionDoubleClickZoom from 'ol/interaction/DoubleClickZoom';
 import OlInteractionDragPan from 'ol/interaction/DragPan';
@@ -37,10 +33,10 @@ import OlControlOverviewMap from 'ol/control/OverviewMap';
 import OlControlScaleLine from 'ol/control/ScaleLine';
 import OlControlZoom from 'ol/control/Zoom';
 
-import { LayerID, MapLayer, ROOT_LAYER_ID } from '../layers/defs';
+import { LayerID, MapLayer, ROOT_LAYER_ID } from '../layers';
 import { QgisMapContextProvider } from './context';
 import type { QgisMapContext } from './context';
-import { reducerObject, initialState, QgisMapState } from './store';
+import { reducerObject, initialState } from './store';
 import { setMapView } from './map.slice';
 import { setFullScreen } from './display.slice';
 import {
@@ -48,7 +44,6 @@ import {
     editOverlayLayer, removeBaseLayer, removeOverlayLayer, reorderOverlayLayer,
     setActiveBaseLayer, setActiveOverlayLayer
 } from './layers.slice';
-import TileLayer from 'ol/layer/Tile';
 import { GenreRegistry } from '../layers';
 
 
@@ -215,7 +210,6 @@ export const updateMapInfoState = (
  */
 export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
     console.log('[QgisMapController] rendering');
-    useLogChanges(props);
     const {
         initialView,
         children
@@ -274,7 +268,7 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
 
 
     // Called after the div element is mounted. Creates the map.
-    const mapRef = useCallbackDebugger((node: HTMLDivElement | null) => {
+    const mapRef = useCallback((node: HTMLDivElement | null) => {
         console.log('[QgisMapController] mapRef receives %O', node);
         if (node === null) {
             return;
@@ -299,7 +293,7 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
 
 
     // Recreate the layers when the internal state changes.
-    useEffectDebugger(() => {
+    useEffect(() => {
         if (mapData.current.map === null) {
             return;
         }
@@ -318,7 +312,7 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
 
 
     // Callback for entering-exiting the full screen mode.
-    const setFullScreenKB = useCallbackDebugger((value: boolean) => {
+    const setFullScreenKB = useCallback((value: boolean) => {
         // Make sure we have a map node.
         const node = mapData.current.mapNode;
         if (!node) {
@@ -360,47 +354,47 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
         groupLayerInTree: ROOT_LAYER_ID,
 
         // The callback to set the active base layer.
-        setActiveBaseLayer: useCallbackDebugger((layerId: LayerID | undefined) => {
+        setActiveBaseLayer: useCallback((layerId: LayerID | undefined) => {
             dispatch(setActiveBaseLayer(layerId));
         }, []),
 
         // The callback to set the active overlay layer.
-        setActiveOverlayLayer: useCallbackDebugger((layerId: LayerID | undefined) => {
+        setActiveOverlayLayer: useCallback((layerId: LayerID | undefined) => {
             dispatch(setActiveOverlayLayer(layerId));
         }, []),
 
         // The callback to add a base layer.
-        addBaseLayer: useCallbackDebugger((layer: MapLayer, activate?: boolean) => {
+        addBaseLayer: useCallback((layer: MapLayer, activate?: boolean) => {
             dispatch(addBaseLayer({ layer, activate }));
         }, []),
 
         // The callback to remove a base layer.
-        removeBaseLayer: useCallbackDebugger((layerId: string) => {
+        removeBaseLayer: useCallback((layerId: string) => {
             dispatch(removeBaseLayer(layerId));
         }, []),
 
         // The callback to edit a base layer.
-        editBaseLayer: useCallbackDebugger((layer: MapLayer, activate?: boolean) => {
+        editBaseLayer: useCallback((layer: MapLayer, activate?: boolean) => {
             dispatch(editBaseLayer({ layer, activate }));
         }, []),
 
         // The callback to add an overlay layer.
-        addOverlayLayer: useCallbackDebugger((layer: MapLayer, activate?: boolean) => {
+        addOverlayLayer: useCallback((layer: MapLayer, activate?: boolean) => {
             dispatch(addOverlayLayer({ layer, activate }));
         }, []),
 
         // The callback to remove an overlay layer.
-        removeOverlayLayer: useCallbackDebugger((layerId: string) => {
+        removeOverlayLayer: useCallback((layerId: string) => {
             dispatch(removeOverlayLayer(layerId));
         }, []),
 
         // The callback to edit an overlay layer.
-        editOverlayLayer: useCallbackDebugger((layer: MapLayer, activate?: boolean) => {
+        editOverlayLayer: useCallback((layer: MapLayer, activate?: boolean) => {
             dispatch(editOverlayLayer({ layer, activate }));
         }, []),
 
         // The callback to reorder a base layer.
-        reorderOverlayLayer: useCallbackDebugger((
+        reorderOverlayLayer: useCallback((
             layer: LayerID,
             parent: LayerID | undefined,
             index: number,
