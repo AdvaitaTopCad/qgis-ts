@@ -29,7 +29,7 @@ export const displaySlice = createSlice({
     name: 'display',
     initialState,
     reducers: {
-        toggleFullScreen: (state, action: PayloadAction<boolean>) => {
+        setFullScreen: (state, action: PayloadAction<boolean>) => {
             state.fullScreen = action.payload;
         },
     },
@@ -37,11 +37,5 @@ export const displaySlice = createSlice({
 
 
 export const {
-    toggleFullScreen
+    setFullScreen
 } = displaySlice.actions;
-
-
-/**
- * Tells if the application is in full screen mode.
- */
-export const selectFullScreen = (state: QgisMapState) => state.display.fullScreen;

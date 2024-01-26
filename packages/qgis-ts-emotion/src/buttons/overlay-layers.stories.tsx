@@ -24,9 +24,7 @@ export default storybookConfig;
 // Base for all stories in this file.
 const Template: StoryFn<StoryProps> = (props) => {
     return (
-        <SimpleMap>
-            <OverlayLayersButton {...props} />
-        </SimpleMap>
+        <SimpleMap buttonChildren={<OverlayLayersButton {...props} />} />
     );
 }
 

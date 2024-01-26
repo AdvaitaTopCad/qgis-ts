@@ -1,6 +1,6 @@
 import React, { CSSProperties, FC } from 'react';
 import { useQgisMapContext } from '@qgis-ts/react';
-
+import { FullScreen, useFullScreenHandle } from "react-full-screen";
 
 // The style we use for the inner div.
 const sxDiv = {
@@ -42,7 +42,7 @@ export const QgisMapView: FC<QgisMapViewProps> = ({
 }) => {
     const {
         mapId,
-        mapRef
+        mapRef,
     } = useQgisMapContext()
     return (
         <div

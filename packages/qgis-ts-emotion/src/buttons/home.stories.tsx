@@ -25,9 +25,7 @@ export default storybookConfig;
 // Base for all stories in this file.
 const Template: StoryFn<StoryProps> = (props) => {
     return (
-        <SimpleMap>
-            <HomeButton {...props} />
-        </SimpleMap>
+        <SimpleMap buttonChildren={<HomeButton {...props} />} />
     );
 }
 

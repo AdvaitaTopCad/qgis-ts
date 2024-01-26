@@ -1,7 +1,9 @@
 import OlMap from 'ol/Map';
 import { createContext, useContext } from 'react';
-import { QgisMapState } from './store';
 import { IntlShape } from 'react-intl';
+import { FullScreenHandle } from "react-full-screen";
+
+import { QgisMapState } from './store';
 import { LayerID, MapLayer } from '../layers';
 
 
@@ -86,6 +88,11 @@ export interface QgisMapContext extends QgisMapState {
         parent: LayerID | undefined,
         index: number,
     ) => void;
+
+    /**
+     * The callback to enter or exit full screen mode.
+     */
+    setFullScreen: (fullScreen: boolean) => void;
 };
 
 

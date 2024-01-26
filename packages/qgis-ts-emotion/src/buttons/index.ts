@@ -4,6 +4,8 @@ export { BaseLayersButton } from './base-layers';
 export type { BaseButtonProps } from './base';
 export { BaseButton } from './base';
 
+export { FullScreenSwitcher } from './full-screen';
+
 export { HomeButton } from './home';
 
 export { MyLocationButton } from './my-loc';

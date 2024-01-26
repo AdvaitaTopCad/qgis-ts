@@ -1,9 +1,12 @@
 import {
     FC, ReactNode, useCallback, useEffect, useId, useReducer, useRef
 } from 'react';
-import { useEffectDebugger, useCallbackDebugger, useLogChanges } from 'use-debugger-hooks';
+import {
+    useEffectDebugger, useCallbackDebugger, useLogChanges
+} from 'use-debugger-hooks';
 import { combineReducers } from 'redux';
 import { IntlShape, useIntl } from 'react-intl';
+import fscreen from 'fscreen';
 
 import OlMap from 'ol/Map';
 import OlView, { ViewOptions } from 'ol/View';
@@ -29,7 +32,7 @@ import OlInteractionSnap from 'ol/interaction/Snap';
 // import OlInteractionTransform from 'ol-ext/interaction/Transform';
 import OlInteractionTranslate from 'ol/interaction/Translate';
 
-import { FullScreen, defaults as olCreateControlDefaults } from 'ol/control';
+import { defaults as olCreateControlDefaults } from 'ol/control';
 import OlControlOverviewMap from 'ol/control/OverviewMap';
 import OlControlScaleLine from 'ol/control/ScaleLine';
 import OlControlZoom from 'ol/control/Zoom';
@@ -39,6 +42,7 @@ import { QgisMapContextProvider } from './context';
 import type { QgisMapContext } from './context';
 import { reducerObject, initialState, QgisMapState } from './store';
 import { setMapView } from './map.slice';
+import { setFullScreen } from './display.slice';
 import {
     addBaseLayer, addOverlayLayer, editBaseLayer,
     editOverlayLayer, removeBaseLayer, removeOverlayLayer, reorderOverlayLayer,
@@ -108,6 +112,11 @@ interface ControllerData {
      * Updates the map info state.
      */
     updateMapInfoState: () => void;
+
+    /**
+     * The callback to handle a full screen change.
+     */
+    handleFullScreenChange: undefined | (() => void);
 }
 
 
@@ -207,11 +216,11 @@ export const updateMapInfoState = (
 export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
     console.log('[QgisMapController] rendering');
     useLogChanges(props);
-
     const {
         initialView,
         children
     } = props;
+
 
     // Our translation provider.
     const intl = useIntl();
@@ -235,6 +244,7 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
 
     // This is where we keep internal map data not suitable for state.
     const mapData = useRef<ControllerData>({
+        handleFullScreenChange: undefined,
         mapNode: null,
         intl,
         map: null,
@@ -269,9 +279,22 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
         if (node === null) {
             return;
         }
+
+        // Store the node.
         mapData.current.intl = intl;
         mapData.current.mapNode = node;
+
+        // Create the map.
         createMap(mapData.current, state.mouse, initialView, mapId);
+
+        // Initialize the full screen handler.
+        const handleChange = () => {
+            dispatch(setFullScreen(fscreen.fullscreenElement === node));
+        };
+        mapData.current.handleFullScreenChange = handleChange;
+
+        // Install the full screen handler.
+        fscreen.addEventListener('fullscreenchange', handleChange);
     }, [intl, state.mouse, initialView]);
 
 
@@ -292,6 +315,38 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
             mapData.current.map.getLayers().getLength()
         )
     }, [state.layers]);
+
+
+    // Callback for entering-exiting the full screen mode.
+    const setFullScreenKB = useCallbackDebugger((value: boolean) => {
+        // Make sure we have a map node.
+        const node = mapData.current.mapNode;
+        if (!node) {
+            return Promise.reject();
+        }
+
+        if (value) {
+            // Enter full screen mode.
+            if (fscreen.fullscreenElement) {
+                // Exit previous full screen, if any.
+                fscreen.exitFullscreen();
+                // return fscreen.exitFullscreen().then(() => {
+                return fscreen.requestFullscreen(node);
+                // });
+            } else {
+                // Not in full screen mode.
+                return fscreen.requestFullscreen(node);
+            }
+        } else {
+            // Exit full screen mode.
+            if (fscreen.fullscreenElement === node) {
+                return fscreen.exitFullscreen();
+            }
+        }
+
+        // The state will be updated by the full screen handler.
+        // dispatch(setFullScreen(value));
+    }, []);
 
 
     // Compute the value that will be provided through the context.
@@ -352,6 +407,9 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
         ) => {
             dispatch(reorderOverlayLayer({ layer, parent, index }));
         }, []),
+
+        // Callback for entering-exiting the full screen mode.
+        setFullScreen: setFullScreenKB,
 
         // The entire state is public.
         ...state

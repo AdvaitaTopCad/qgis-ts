@@ -60,6 +60,7 @@
         "@swc/core": "~1.3.105",
         "@swc/helpers": "~0.5.3",
         "@testing-library/react": "14.0.0",
+        "@types/fscreen": "^1.0.4",
         "@types/jest": "^29.5.11",
         "@types/node": "18.16.9",
         "@types/react": "18.2.33",
@@ -105,6 +106,8 @@
         "@mui/icons-material": "^5.15.6",
         "@mui/material": "^5.15.6",
         "@textea/json-viewer": "^3.3.0",
-        "ol": "^8.2.0"
+        "fscreen": "^1.2.0",
+        "ol": "^8.2.0",
+        "react-full-screen": "^1.1.1"
     }
 }

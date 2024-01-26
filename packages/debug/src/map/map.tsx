@@ -1,13 +1,32 @@
 import { MapLayerComp, QgisMapController, QgisMapView } from "@qgis-ts/react";
-import { ReactNode } from "react";
+import { FC, ReactNode } from "react";
 import { IntlProvider } from "react-intl";
 import { MapDebugger } from "../debugger";
 
 
 /**
+ * Properties expected by the SimpleMap component.
+ */
+export interface SimpleMapProps {
+    /**
+     * The children of the component.
+     */
+    children?: ReactNode;
+
+    /**
+     * Children placed in the vertical bar at the right side of the map..
+     */
+    buttonChildren?: ReactNode;
+}
+
+
+/**
  * A simple map that places its children in the bottom-right corner.
  */
-export const SimpleMap = ({children }: {children: ReactNode}) => {
+export const SimpleMap: FC<SimpleMapProps> = ({
+    children,
+    buttonChildren,
+}) => {
     return (
         <IntlProvider locale="en">
             <QgisMapController initialView={{
@@ -20,6 +39,7 @@ export const SimpleMap = ({children }: {children: ReactNode}) => {
                         activate
                         settings={{
                             id: "osm",
+                            title: "OpenStreetMap",
                             genre: 'osm-tile-raster',
                         }}
                     />
@@ -37,8 +57,9 @@ export const SimpleMap = ({children }: {children: ReactNode}) => {
                             flexWrap: "wrap",
                         }}
                     >
-                        {children}
+                        {buttonChildren}
                     </div>
+                    {children}
                 </QgisMapView>
                 <MapDebugger />
             </QgisMapController>

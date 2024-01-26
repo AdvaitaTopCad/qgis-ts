@@ -1,21 +1,21 @@
 import type { StoryFn, Meta } from '@storybook/react';
 import { SimpleMap } from '@qgis-ts/debug';
 
-import { BaseButtonProps } from './base';
-import { ZoomOutButton } from './zoom-out';
+import type { FullScreenSwitcherProps } from './full-screen';
+import { FullScreenSwitcher } from './full-screen';
 
 
 // The properties passed to each story.
-type StoryProps = Omit<BaseButtonProps, "children">;
+type StoryProps = FullScreenSwitcherProps;
 
 
 // Common configuration for all stories.
 const storybookConfig: Meta<StoryProps> = {
-    title: 'buttons/zoom-out',
+    title: 'buttons/full-screen',
     tags: [],
-    component: ZoomOutButton,
+    component: FullScreenSwitcher,
     args: {
-
+        side: "tl"
     },
 };
 export default storybookConfig;
@@ -24,7 +24,9 @@ export default storybookConfig;
 // Base for all stories in this file.
 const Template: StoryFn<StoryProps> = (props) => {
     return (
-        <SimpleMap buttonChildren={<ZoomOutButton {...props} />} />
+        <SimpleMap>
+            <FullScreenSwitcher {...props} />
+        </SimpleMap>
     );
 }
 

@@ -17,9 +17,15 @@ importers:
       '@textea/json-viewer':
         specifier: ^3.3.0
         version: 3.3.0(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@mui/material@5.15.6)(@types/react@18.2.33)(react-dom@18.2.0)(react@18.2.0)
+      fscreen:
+        specifier: ^1.2.0
+        version: 1.2.0
       ol:
         specifier: ^8.2.0
         version: 8.2.0
+      react-full-screen:
+        specifier: ^1.1.1
+        version: 1.1.1(react@18.2.0)
     devDependencies:
       '@babel/core':
         specifier: ^7.23.7
@@ -159,6 +165,9 @@ importers:
       '@testing-library/react':
         specifier: 14.0.0
         version: 14.0.0(react-dom@18.2.0)(react@18.2.0)
+      '@types/fscreen':
+        specifier: ^1.0.4
+        version: 1.0.4
       '@types/jest':
         specifier: ^29.5.11
         version: 29.5.11
@@ -6562,6 +6571,10 @@ packages:
       '@types/node': 18.16.9
     dev: true
 
+  /@types/fscreen@1.0.4:
+    resolution: {integrity: sha512-TsjxyAUvlvuQyao9vNk0yES4nY07K9xoAbkhgXU948JG39EqlLxniWuW9OiZde9Q8ACSpu3fmbXXRAfb/l/HqQ==}
+    dev: true
+
   /@types/glob@7.2.0:
     resolution: {integrity: sha512-ZUxbzKl0IfJILTS6t7ip5fQQM/J3TJYubDm3nMbgubNNYS62eXeUpoLUC8/7fJNiFYHTrGPQn7hspDUzIHX3UA==}
     dependencies:
@@ -10821,6 +10834,10 @@ packages:
   /fs.realpath@1.0.0:
     resolution: {integrity: sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==}
     dev: true
+
+  /fscreen@1.2.0:
+    resolution: {integrity: sha512-hlq4+BU0hlPmwsFjwGGzZ+OZ9N/wq9Ljg/sq3pX+2CD7hrJsX9tJgWWK/wiNTFM212CLHWhicOoqwXyZGGetJg==}
+    dev: false
 
   /fsevents@2.3.2:
     resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==}
@@ -15607,6 +15624,16 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
       react-is: 18.1.0
     dev: true
+
+  /react-full-screen@1.1.1(react@18.2.0):
+    resolution: {integrity: sha512-xoEgkoTiN0dw9cjYYGViiMCBYbkS97BYb4bHPhQVWXj1UnOs8PZ1rPzpX+2HMhuvQV1jA5AF9GaRbO3fA5aZtg==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>= 16.8.0'
+    dependencies:
+      fscreen: 1.2.0
+      react: 18.2.0
+    dev: false
 
   /react-intl@6.6.1(react@18.2.0)(typescript@5.3.3):
     resolution: {integrity: sha512-oaMRr5A5KVpaOgnF0vdLTmBPI8rLQPReujmXTeIt2jCmZOJ+bcgqY/idFLVr52Iu/Aia8pDMBFUnzRjcg8T5aw==}
