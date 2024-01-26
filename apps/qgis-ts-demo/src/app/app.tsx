@@ -1,21 +1,39 @@
-import styled from '@emotion/styled';
+import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import { QgisStandardApp } from '@qgis-ts/ui-emotion';
+import { IntlProvider } from 'react-intl';
 
-import { QgisMap } from '@qgis-ts/ui-emotion';
-
-const StyledApp = styled.div`
-    // Your style here
-`;
+const theme = createTheme({
+    components: {
+        MuiCssBaseline: {
+            styleOverrides: {
+                body: {
+                    height: "100vh",
+                    width: "100vw",
+                    padding: "0px !important",
+                    margin: "0px !important",
+                    overflow: "hidden",
+                },
+                html: {
+                    boxSizing: "border-box",
+                }
+            }
+        }
+    }
+});
 
 export function App() {
     return (
-        <StyledApp>
-            <QgisMap
-                initialView={{
-                    center: [0, 0],
-                    zoom: 1,
-                }}
-            />
-        </StyledApp>
+        <IntlProvider locale="en">
+            <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <QgisStandardApp
+                    initialView={{
+                        center: [0, 0],
+                        zoom: 2,
+                    }}
+                />
+            </ThemeProvider>
+        </IntlProvider>
     );
 }
 

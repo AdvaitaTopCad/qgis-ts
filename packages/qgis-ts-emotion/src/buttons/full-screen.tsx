@@ -23,6 +23,8 @@ const StyledButton = styled("button", {
 }) => ({
     width: "32px",
     height: "32px",
+    padding: 0,
+    margin: 0,
     zIndex: 6000,
 
     // Position the button in the corner.
@@ -45,17 +47,17 @@ const StyledButton = styled("button", {
     ) : (
         side === "tr" ? (
             fullScreen
-                ? "polygon(0 100%, 60% 100%, 0 60%)"
-                : "polygon(100% 0, 60% 0, 100% 60%)"
+                ? "polygon(0 100%, 40% 100%, 0 60%)"
+                : "polygon(100% 0, 40% 0, 100% 60%)"
         ) : (
             side === "bl" ? (
                 fullScreen
-                    ? "polygon(100% 0, 60% 0, 100% 60%)"
-                    : "polygon(0 100%, 60% 100%, 0 60%)"
+                    ? "polygon(100% 0, 60% 0, 100% 40%)"
+                    : "polygon(0 100%, 60% 100%, 0 40%)"
             ) : (
                 fullScreen
-                    ? "polygon(0 0, 60% 0, 0 60%)"
-                    : "polygon(100% 100%, 60% 100%, 100% 60%)"
+                    ? "polygon(0 0, 40% 0, 0 40%)"
+                    : "polygon(100% 100%, 40% 100%, 100% 40%)"
             )
         )
     ),

@@ -1,2 +1,104 @@
 {
+  "map": {
+    "buttons": {
+      "base-layers": {
+        "none": {
+          "__id__": "map.buttons.base-layers.none",
+          "defaultMessage": "None",
+          "en": "None",
+          "ro": "None"
+        },
+        "tip": {
+          "__id__": "map.buttons.base-layers.tip",
+          "defaultMessage": "Change background",
+          "en": "Change background",
+          "ro": "Change background"
+        }
+      },
+      "full_screen": {
+        "__id__": "map.buttons.full_screen",
+        "defaultMessage": "Switch between full screen and normal mode",
+        "en": "Switch between full screen and normal mode",
+        "ro": "Switch between full screen and normal mode"
+      },
+      "home": {
+        "__id__": "map.buttons.home",
+        "defaultMessage": "Navigate to starting location",
+        "en": "Navigate to starting location",
+        "ro": "Navigate to starting location"
+      },
+      "my-loc": {
+        "accuracy": {
+          "__id__": "map.buttons.my-loc.accuracy",
+          "defaultMessage": "Accuracy [m]",
+          "en": "Accuracy [m]",
+          "ro": "Accuracy [m]"
+        },
+        "altitude": {
+          "__id__": "map.buttons.my-loc.altitude",
+          "defaultMessage": "Altitude [m]",
+          "en": "Altitude [m]",
+          "ro": "Altitude [m]"
+        },
+        "error": {
+          "permission-denied": {
+            "__id__": "map.buttons.my-loc.error.permission-denied",
+            "defaultMessage": "The page is not allowed to acquire the position.",
+            "en": "The page is not allowed to acquire the position.",
+            "ro": "The page is not allowed to acquire the position."
+          },
+          "position-unavailable": {
+            "__id__": "map.buttons.my-loc.error.position-unavailable",
+            "defaultMessage": "The position could not be acquired.",
+            "en": "The position could not be acquired.",
+            "ro": "The position could not be acquired."
+          },
+          "timeout": {
+            "__id__": "map.buttons.my-loc.error.timeout",
+            "defaultMessage": "The request to get user location timed out.",
+            "en": "The request to get user location timed out.",
+            "ro": "The request to get user location timed out."
+          }
+        },
+        "heading": {
+          "__id__": "map.buttons.my-loc.heading",
+          "defaultMessage": "Heading [m/s]",
+          "en": "Heading [m/s]",
+          "ro": "Heading [m/s]"
+        },
+        "position": {
+          "__id__": "map.buttons.my-loc.position",
+          "defaultMessage": "Position",
+          "en": "Position",
+          "ro": "Position"
+        },
+        "tooltip": {
+          "__id__": "map.buttons.my-loc.tooltip",
+          "defaultMessage": "Click to navigate to your location.",
+          "en": "Click to navigate to your location.",
+          "ro": "Click to navigate to your location."
+        }
+      },
+      "over-layers": {
+        "tip": {
+          "__id__": "map.buttons.over-layers.tip",
+          "defaultMessage": "Edit layers",
+          "en": "Edit layers",
+          "ro": "Edit layers"
+        }
+      },
+      "zoom-in": {
+        "__id__": "map.buttons.zoom-in",
+        "defaultMessage": "Zoom in",
+        "en": "Zoom in",
+        "ro": "Zoom in"
+      },
+      "zoom-out": {
+        "__id__": "map.buttons.zoom-out",
+        "defaultMessage": "Zoom out",
+        "en": "Zoom out",
+        "ro": "Zoom out"
+      }
+    }
+  }
 }

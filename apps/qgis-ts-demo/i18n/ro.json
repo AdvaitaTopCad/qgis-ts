@@ -1,3 +1,17 @@
 {
-  "map.rotation.reset": "Reset rotation"
+  "map.buttons.base-layers.none": "None",
+  "map.buttons.base-layers.tip": "Change background",
+  "map.buttons.full_screen": "Switch between full screen and normal mode",
+  "map.buttons.home": "Navigate to starting location",
+  "map.buttons.my-loc.accuracy": "Accuracy [m]",
+  "map.buttons.my-loc.altitude": "Altitude [m]",
+  "map.buttons.my-loc.error.permission-denied": "The page is not allowed to acquire the position.",
+  "map.buttons.my-loc.error.position-unavailable": "The position could not be acquired.",
+  "map.buttons.my-loc.error.timeout": "The request to get user location timed out.",
+  "map.buttons.my-loc.heading": "Heading [m/s]",
+  "map.buttons.my-loc.position": "Position",
+  "map.buttons.my-loc.tooltip": "Click to navigate to your location.",
+  "map.buttons.over-layers.tip": "Edit layers",
+  "map.buttons.zoom-in": "Zoom in",
+  "map.buttons.zoom-out": "Zoom out"
 }

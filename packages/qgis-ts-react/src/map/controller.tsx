@@ -144,16 +144,16 @@ export function createMap(
         new OlInteractionKeyboardPan(),
     ]);
 
-    const controls = olCreateControlDefaults({
-        zoom: false,
-        attribution: false,
-        rotateOptions: ({
-            tipLabel: data.intl.formatMessage({
-                id: "map.rotation.reset",
-                defaultMessage: "Reset rotation"
-            })
-        })
-    });
+    // const controls = olCreateControlDefaults({
+    //     zoom: false,
+    //     attribution: false,
+    //     rotateOptions: ({
+    //         tipLabel: data.intl.formatMessage({
+    //             id: "map.rotation.reset",
+    //             defaultMessage: "Reset rotation"
+    //         })
+    //     })
+    // });
 
     data.map = new OlMap({
         layers: [],

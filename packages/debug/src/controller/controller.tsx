@@ -2,6 +2,8 @@ import { FC, PropsWithChildren, useCallback } from "react";
 import {
     QgisMapContext, QgisMapContextProvider, ROOT_LAYER_ID
 } from "@qgis-ts/react";
+import OlMap from 'ol/Map'
+import OlView from 'ol/View';
 import type {
     LayerID, MapLayer,
 } from "@qgis-ts/react";
@@ -27,6 +29,16 @@ export const MapDebugControllerInner: FC<MapDebugControllerProps> = ({
 }) => {
     return (
         <QgisMapContextProvider value={{
+            olMap: new OlMap({
+                layers: [],
+                controls: [],
+                interactions: [],
+                // keyboardEventTarget: data.mapNode as HTMLElement,
+                view: new OlView({
+                    center: [0, 0],
+                    zoom: 0,
+                })
+            }),
 
             mapId: "mapId",
 
@@ -103,6 +115,11 @@ export const MapDebugControllerInner: FC<MapDebugControllerProps> = ({
                 );
             }, []),
 
+            // Callback for entering-exiting the full screen mode.
+            setFullScreen: useCallback((value: boolean) => {
+                console.log("setFullScreen(value=%O)", value);
+            }, []),
+
             // ------------------ [ State ] ------------------
 
             map: {
@@ -116,7 +133,11 @@ export const MapDebugControllerInner: FC<MapDebugControllerProps> = ({
                     size: {
                         width: 0,
                         height: 0,
-                    },
+                    }
+                },
+                homeView: {
+                    center: [0, 0],
+                    zoom: 0,
                 },
             },
 

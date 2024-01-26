@@ -18,7 +18,7 @@ export const RightBar: FC<BarProps> = ({ children, ...rest }) => (
             position: 'absolute',
             bottom: 0,
             right: 0,
-            minWidth: barSize,
+            width: barSize,
             top: 0,
             backgroundColor: 'transparent',
             zIndex: ZIndex.Bar,

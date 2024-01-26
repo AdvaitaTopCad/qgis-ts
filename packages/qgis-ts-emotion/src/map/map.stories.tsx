@@ -10,7 +10,6 @@ import BuildIcon from '@mui/icons-material/Build';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AlarmIcon from '@mui/icons-material/Alarm';
 import { Divider } from '@mui/material';
-import { RightBar } from '../layouts';
 import { HomeButton } from '../buttons/home';
 import { ZoomInButton } from '../buttons/zoom-in';
 import { ZoomOutButton } from '../buttons/zoom-out';
@@ -18,7 +17,7 @@ import { BaseLayersButton } from '../buttons/base-layers';
 import { MyLocation } from '@mui/icons-material';
 import { MyLocationButton } from '../buttons/my-loc';
 import { OverlayLayersButton } from '../buttons/overlay-layers';
-import { MapLayerComp } from '@qgis-ts/react';
+import { MapLayerComp, RightBar } from '@qgis-ts/react';
 
 // The properties passed to each story.
 type StoryProps = QgisMapProps;
@@ -67,6 +66,7 @@ const Template: StoryFn<StoryProps> = () => {
                         settings={{
                             id: "osm",
                             genre: 'osm-tile-raster',
+                            title: 'OpenStreetMap',
                         }}
                     />
                 </MapLayerComp>
