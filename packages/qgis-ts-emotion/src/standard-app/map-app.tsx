@@ -37,10 +37,8 @@ export const QgisStandardApp: FC<QgisStandardAppProps> = ({
     return (
         <QgisMapController {...rest}>
             <QgisMapView style={viewStyle}>
-                <FullScreenSwitcher side="tr" />
-                <BottomBar>
-
-                </BottomBar>
+                <FullScreenSwitcher side="br" />
+                <BottomBar />
                 <LeftBar />
                 <RightBar>
                     <ZoomOutButton />

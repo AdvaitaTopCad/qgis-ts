@@ -42,21 +42,21 @@ const StyledButton = styled("button", {
     // Draw a triangle in that corner.
     clipPath: side === "tl" ? (
         fullScreen
-            ? "polygon(100% 100%, 60% 100%, 100% 60%)"
+            ? "polygon(100% 100%, 40% 100%, 100% 40%)"
             : "polygon(0 0, 60% 0, 0 60%)"
     ) : (
         side === "tr" ? (
             fullScreen
-                ? "polygon(0 100%, 40% 100%, 0 60%)"
+                ? "polygon(0 100%, 60% 100%, 0 40%)"
                 : "polygon(100% 0, 40% 0, 100% 60%)"
         ) : (
             side === "bl" ? (
                 fullScreen
-                    ? "polygon(100% 0, 60% 0, 100% 40%)"
+                    ? "polygon(100% 0, 40% 0, 100% 60%)"
                     : "polygon(0 100%, 60% 100%, 0 40%)"
             ) : (
                 fullScreen
-                    ? "polygon(0 0, 40% 0, 0 40%)"
+                    ? "polygon(0 0, 60% 0, 0 60%)"
                     : "polygon(100% 100%, 40% 100%, 100% 40%)"
             )
         )
