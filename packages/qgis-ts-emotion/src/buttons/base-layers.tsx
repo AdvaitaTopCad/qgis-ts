@@ -247,9 +247,9 @@ export const BaseLayersButton: FC<Omit<BaseButtonProps, "children">> = (
     let right = 0;
     if (buttonRef.current) {
         bottom = (
-            buttonRef.current.offsetTop +
-            buttonRef.current.offsetHeight -
-            buttonRef.current.parentElement!.offsetHeight! +
+            buttonRef.current.parentElement!.offsetHeight! -
+            buttonRef.current.offsetTop -
+            buttonRef.current.offsetHeight +
             cardMargin
         );
         const rect = buttonRef.current.getBoundingClientRect();
