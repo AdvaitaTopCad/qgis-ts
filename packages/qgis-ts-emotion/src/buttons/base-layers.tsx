@@ -51,13 +51,13 @@ export const BaseLayersButton: FC<Omit<BaseButtonProps, "children">> = (
     // The reference to our button.
     const buttonRef = useRef<HTMLButtonElement>(null);
 
-    // Callback for closing the background container or dialog.
+    // Callback for selecting an item and closing the container.
     const onSelect = useCallback((id: LayerID | undefined) => {
         setActiveBaseLayer(id);
         setOpen("closed");
     }, []);
 
-    // Callback for selecting a.
+    // Callback for closing the background container or dialog.
     const onClose = useCallback(() => setOpen("closed"), []);
 
     // Callback triggered when the user clicks on the button.
@@ -85,7 +85,7 @@ export const BaseLayersButton: FC<Omit<BaseButtonProps, "children">> = (
             } else {
                 return "closed";
             }
-        })
+        });
     }, [olMap, size, bases]);
 
     // Compute the position based on the placement of the button.
@@ -104,11 +104,13 @@ export const BaseLayersButton: FC<Omit<BaseButtonProps, "children">> = (
 
     // This will be placed either inside the dialog or inside the
     // simple container.
-    const content = <BackgroundContent
-        formatMessage={formatMessage}
-        onSelect={onSelect}
-        bases={bases}
-    />;
+    const content = (
+        <BackgroundContent
+            formatMessage={formatMessage}
+            onSelect={onSelect}
+            bases={bases}
+        />
+    );
 
     return (
         <>

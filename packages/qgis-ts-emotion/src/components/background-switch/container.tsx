@@ -1,5 +1,6 @@
 import { CSSProperties } from "react";
 import { styled } from '@mui/system';
+
 import { backgroundCardHeight } from "./defs";
 
 
@@ -25,8 +26,8 @@ export const BackgroundContainer = styled('div', {
     ),
     name: 'BackgroundContainer',
 })<BackgroundContainerProps>(({
-    right,
     open,
+    right,
     bottom,
 }) => ({
     backgroundColor: "transparent",

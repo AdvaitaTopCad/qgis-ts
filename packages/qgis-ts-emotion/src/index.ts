@@ -13,6 +13,8 @@ export type {
 
     GeolocationData,
     UseGeolocationResult,
+
+    OverlayContainerProps,
 } from './components';
 export {
     BackgroundCard,
@@ -31,4 +33,6 @@ export {
     GeolocationSpeedRow,
     GeolocationTable,
     useGeolocation,
+
+    OverlayContainer,
 } from './components';

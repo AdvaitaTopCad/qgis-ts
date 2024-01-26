@@ -15,7 +15,7 @@ export {
 
 export type {
     GeolocationData, UseGeolocationResult
- } from './geolocation';
+} from './geolocation';
 export {
     GeolocationAccuracyRow,
     GeolocationAltitudeRow,
@@ -27,3 +27,11 @@ export {
     GeolocationTable,
     useGeolocation,
 } from './geolocation';
+
+
+export type {
+    OverlayContainerProps,
+} from './layer-tree';
+export {
+    OverlayContainer,
+} from './layer-tree';
