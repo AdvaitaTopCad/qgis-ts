@@ -8,6 +8,7 @@ export type {
 export {
     BackgroundCard,
     BackgroundContainer,
+    BackgroundContainerStyled,
     BackgroundContent,
     backgroundCardWidth,
     backgroundCardHeight,
@@ -37,5 +38,6 @@ export type {
 } from './layer-tree';
 export {
     OverlayContainer,
+    OverlayContainerStyled,
     OverlayTree
 } from './layer-tree';

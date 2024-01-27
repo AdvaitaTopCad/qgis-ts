@@ -22,6 +22,7 @@ export {
 
     BackgroundCard,
     BackgroundContainer,
+    BackgroundContainerStyled,
     BackgroundContent,
     backgroundCardWidth,
     backgroundCardHeight,
@@ -38,5 +39,6 @@ export {
     useGeolocation,
 
     OverlayContainer,
+    OverlayContainerStyled,
     OverlayTree,
 } from './components';

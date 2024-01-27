@@ -1,5 +1,5 @@
-import { CSSProperties } from "react";
-import { styled } from '@mui/material';
+import { CSSProperties, FC, PropsWithChildren } from "react";
+import { Backdrop, Modal, styled } from '@mui/material';
 
 
 /**
@@ -10,13 +10,18 @@ export interface OverlayContainerProps extends CSSProperties {
      * The open/close state of the overlay container.
      */
     open: boolean;
+
+    /**
+     * The callback to be invoked to close the pop-up.
+     */
+    onClose: () => void;
 };
 
 
 /**
  * The outer container for the overlay tree.
  */
-export const OverlayContainer = styled('div', {
+export const OverlayContainerStyled = styled('div', {
     shouldForwardProp: (prop) => (
         prop !== 'open' &&
         prop !== 'right' &&
@@ -51,3 +56,36 @@ export const OverlayContainer = styled('div', {
 
     })
 });
+
+// We only want the click-away behavior for the backdrop.
+const slotProps = {
+    backdrop: {
+        sx: {
+            backgroundColor: "transparent",
+        },
+    },
+};
+
+
+/**
+ * The outer container for the overlay tree that includes a backdrop.
+ */
+export const OverlayContainer: FC<PropsWithChildren<OverlayContainerProps>> = ({
+    open,
+    children,
+    onClose,
+    ...rest
+}) => {
+    console.log("[OverlayContainer] renders");
+
+    return (
+        <Modal open={open} onClose={onClose} slotProps={slotProps}>
+            <OverlayContainerStyled
+                open={open}
+                {...(rest as any)}
+            >
+                {children}
+            </OverlayContainerStyled>
+        </Modal>
+    );
+}

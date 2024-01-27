@@ -125,6 +125,7 @@ export const BaseLayersButton: FC<Omit<BaseButtonProps, "children">> = (
             </BaseButton>
             <BackgroundContainer
                 open={open === "simple"}
+                onClose={onClose}
                 bottom={bottom}
                 right={right}
             >

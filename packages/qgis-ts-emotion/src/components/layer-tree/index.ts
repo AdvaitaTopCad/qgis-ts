@@ -1,4 +1,6 @@
-export type { OverlayContainerProps } from './container';
+export type {
+    OverlayContainerProps, OverlayContainerStyled
+} from './container';
 export { OverlayContainer } from './container';
 
 export type { OverlayTreeProps } from './tree';

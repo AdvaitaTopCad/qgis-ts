@@ -72,6 +72,7 @@ export const OverlayLayersButton: FC<Omit<BaseButtonProps, "children">> = (
             </BaseButton>
             <OverlayContainer
                 open={open === "simple"}
+                onClose={onClose}
                 bottom={bottom}
                 right={right}
             >
