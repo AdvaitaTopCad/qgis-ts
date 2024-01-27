@@ -62,7 +62,7 @@
         },
         "heading": {
           "__id__": "map.buttons.my-loc.heading",
-          "defaultMessage": "Heading [m/s]",
+          "defaultMessage": "Heading [°]",
           "en": "Heading [m/s]",
           "ro": "Heading [m/s]"
         },
@@ -71,6 +71,10 @@
           "defaultMessage": "Position",
           "en": "Position",
           "ro": "Position"
+        },
+        "speed": {
+          "__id__": "map.buttons.my-loc.speed",
+          "defaultMessage": "Speed [m/s]"
         },
         "tooltip": {
           "__id__": "map.buttons.my-loc.tooltip",

@@ -3,7 +3,6 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { Draft } from "immer";
 import type { PayloadAction } from '@reduxjs/toolkit';
 
-import type { QgisMapState } from './store';
 
 /**
  * Information about the display.

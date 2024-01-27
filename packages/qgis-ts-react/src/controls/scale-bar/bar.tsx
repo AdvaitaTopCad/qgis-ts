@@ -1,10 +1,10 @@
-import { FC, useCallback, useEffect, useRef } from "react"
+import { FC, useCallback, useEffect, useMemo, useRef } from "react"
 import OlControlScaleLine, {
     Options as ScaleLineOptions
 } from 'ol/control/ScaleLine';
 import OlMap from 'ol/Map'
 
-import { useQgisMapContext } from "../../map";
+import { useQgisOlMapContext } from "../../map";
 import { styled } from "@mui/material";
 
 
@@ -53,13 +53,12 @@ export interface ScaleBarData {
  * A control that shows the current scale of the map, in terms of ratio of
  * a distance on the map to the corresponding distance on the ground.
  */
-export const ScaleBar: FC<ScaleBarProps> = ({
-    ...rest
-}) => {
+export const ScaleBar: FC<ScaleBarProps> = (props) => {
     console.log('[ScaleBar] render');
 
     // Get the map from the context.
-    const { olMap } = useQgisMapContext();
+    const olMap = useQgisOlMapContext();
+    console.log('[ScaleBar] map is %O', olMap);
 
     // The internal data of the component.
     const data = useRef<ScaleBarData>({
@@ -80,7 +79,7 @@ export const ScaleBar: FC<ScaleBarProps> = ({
 
         // Create the control.
         const control = new OlControlScaleLine({
-            ...rest,
+            ...props,
             target: node,
         });
         data.current.control = control;
@@ -88,7 +87,7 @@ export const ScaleBar: FC<ScaleBarProps> = ({
         // Add it to the map.
         olMap.addControl(control);
         console.log('[ScaleBar] the component was added');
-    }, [rest, olMap]);
+    }, [props, olMap]);
 
     // On unmount remove the control from the map.
     useEffect(() => {

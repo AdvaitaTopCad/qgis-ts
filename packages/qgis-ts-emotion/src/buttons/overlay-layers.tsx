@@ -2,7 +2,7 @@ import { FC, useCallback, useRef, useState } from "react"
 import AccountTreeIcon from '@mui/icons-material/AccountTree';
 
 import { BaseButton, BaseButtonProps } from "./base";
-import { useQgisMapContext } from "@qgis-ts/react";
+import { useQgisOlMapContext } from "@qgis-ts/react";
 import { useIntl } from "react-intl";
 import { OverlayContainer, OverlayTree } from "../components";
 
@@ -17,7 +17,7 @@ export const OverlayLayersButton: FC<Omit<BaseButtonProps, "children">> = (
     const { formatMessage } = useIntl();
 
     // Get the map from the context.
-    const { olMap } = useQgisMapContext();
+    const olMap = useQgisOlMapContext();
 
     // The open/close state of the background container.
     const [open, setOpen] = useState<"closed" | "dialog" | "simple">("closed");

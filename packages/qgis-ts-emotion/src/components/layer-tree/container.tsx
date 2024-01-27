@@ -29,8 +29,7 @@ export const OverlayContainer = styled('div', {
     bottom,
     theme,
 }) => {
-
-    console.log("[OverlayContainer]", theme);
+    console.log("[OverlayContainer] renders");
 
     return ({
         backgroundColor: theme.palette.background.paper,

@@ -2,7 +2,7 @@ import { FC } from "react"
 import HomeIcon from '@mui/icons-material/Home';
 
 import { BaseButton, BaseButtonProps } from "./base";
-import { useQgisMapContext } from "@qgis-ts/react";
+import { useQgisMapContext, useQgisOlMapContext } from "@qgis-ts/react";
 import { useIntl } from "react-intl";
 
 
@@ -14,7 +14,8 @@ export const HomeButton: FC<Omit<BaseButtonProps, "children">> = (props) => {
     const { formatMessage } = useIntl();
 
     // Get the map from the context.
-    const { olMap, map: {
+    const olMap = useQgisOlMapContext();
+    const { map: {
         homeView
     } } = useQgisMapContext();
 

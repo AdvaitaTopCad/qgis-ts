@@ -1,14 +1,18 @@
+import { FC, useCallback, useState } from 'react';
 import type { StoryFn, Meta } from '@storybook/react';
 import { Box, Button } from '@mui/material';
 import type { QgisMapControllerProps } from './controller';
 import { QgisMapController } from './controller';
 import { MapDebugger } from '@qgis-ts/debug';
 import { IntlProvider } from 'react-intl';
-import { FC, useCallback, useState } from 'react';
-import { useQgisMapContext } from './context';
+
+import { useQgisMapContext } from './general-context';
 import "../layers/genres/xyz-raster-tile";
 import "../layers/genres/osm-raster-tile";
 import "../layers/genres/geojson-vector";
+import { useQgisMapLayersContext } from './layers-context';
+import { useQgisMapViewContext } from './view-context';
+
 
 // The properties passed to each story.
 type StoryProps = QgisMapControllerProps;
@@ -77,14 +81,6 @@ const overlayLayerSettings = (i: number) => {
 const Inner: FC = () => {
     console.log("[Inner] render");
     const {
-        mapId,
-        mapRef,
-        layers: {
-            bases,
-            activeBase,
-            overlays,
-            activeOverlay,
-        },
         addBaseLayer,
         removeBaseLayer,
         editBaseLayer,
@@ -94,6 +90,16 @@ const Inner: FC = () => {
         setActiveOverlayLayer,
         editOverlayLayer,
     } = useQgisMapContext();
+    const {
+        mapId,
+        mapRef,
+    } = useQgisMapViewContext();
+    const {
+        bases,
+        activeBase,
+        overlays,
+        activeOverlay,
+    } = useQgisMapLayersContext();
 
     const [baseCounter, setBaseCounter] = useState(1);
     const [toDeleteBase, setToDeleteBase] = useState(false);
@@ -110,12 +116,14 @@ const Inner: FC = () => {
                                 setToDeleteBase(true);
                                 addBaseLayer({
                                     id: 'toDeleteBase',
+                                    title: 'toDeleteBase',
                                     ...baseLayerSettings(0),
                                 });
                                 return;
                             } else {
                                 addBaseLayer({
                                     id: 'base' + baseCounter,
+                                    title: 'base' + baseCounter,
                                     ...baseLayerSettings(baseCounter),
                                 });
                                 setBaseCounter(baseCounter + 1);
@@ -154,6 +162,7 @@ const Inner: FC = () => {
                             editBaseLayer(
                                 {
                                     id: 'base1',
+                                    title: 'base1',
                                     ...baseLayerSettings(overlayCounter),
                                 },
                                 true
@@ -185,12 +194,14 @@ const Inner: FC = () => {
                                 setToDeleteOverlay(true);
                                 addOverlayLayer({
                                     id: 'toDeleteOverlay',
+                                    title: 'toDeleteOverlay',
                                     ...overlayLayerSettings(0),
                                 });
                                 return;
                             } else {
                                 addOverlayLayer({
                                     id: 'overlay' + overlayCounter,
+                                    title: 'overlay' + overlayCounter,
                                     ...overlayLayerSettings(baseCounter),
                                 });
                                 setOverlayCounter(overlayCounter + 1);
@@ -229,6 +240,7 @@ const Inner: FC = () => {
                             editOverlayLayer(
                                 {
                                     id: 'overlay1',
+                                    title: 'overlay1',
                                     ...overlayLayerSettings(baseCounter),
                                 },
                                 true

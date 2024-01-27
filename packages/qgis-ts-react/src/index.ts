@@ -4,13 +4,24 @@ export { ScaleBar } from './controls';
 
 export type {
     QgisMapContext,
-    QgisMapControllerProps
+    QgisMapControllerProps,
+    QgisMapMouseContext,
+    QgisOlMapContext,
+    QgisMapLayersContext,
+    QgisMapViewContext,
 } from './map';
 export {
-    qgisMapContext,
     QgisMapContextProvider,
     useQgisMapContext,
-    QgisMapController
+    QgisMapController,
+    QgisMapMouseContextProvider,
+    useQgisMapMouseContext,
+    QgisOlMapContextProvider,
+    useQgisOlMapContext,
+    QgisMapLayersContextProvider,
+    useQgisMapLayersContext,
+    QgisMapViewContextProvider,
+    useQgisMapViewContext
 } from './map';
 
 

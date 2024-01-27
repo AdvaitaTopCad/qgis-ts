@@ -1,11 +1,10 @@
+import OlMap from 'ol/Map';
 import { createSlice } from '@reduxjs/toolkit';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { Draft } from "immer";
 import type { PayloadAction } from '@reduxjs/toolkit';
 
-import type { QgisMapState } from './store';
 import { Extent } from 'ol/extent';
-import { Size } from 'ol/size';
 import { Coordinate } from 'ol/coordinate';
 import { ViewOptions } from 'ol/View';
 
@@ -96,6 +95,32 @@ export const {
 
 
 /**
- * Tells if the application is in full screen mode.
+ * Updates the internal state based on current map info.
+ *
+ * @param map The map.
+ * @param dispatch The dispatch function.
  */
-// export const selectFullScreen = (state: QgisMapState) => state.display.fullScreen;
+export const updateMapInfoState = (
+    map: OlMap,
+    dispatch: (value: any) => void
+) => {
+    const view = map.getView();
+    const c: Coordinate = view.getCenter() || [0, 0];
+    const mapSize = map.getSize();
+    const size = mapSize ? {
+        width: mapSize[0],
+        height: mapSize[1]
+    } : {
+        width: 0,
+        height: 0
+    };
+    dispatch(setMapView({
+        center: c,
+        zoom: view.getZoom(),
+        bbox: {
+            bounds: view.calculateExtent(mapSize),
+            rotation: view.getRotation(),
+        },
+        size,
+    }));
+}

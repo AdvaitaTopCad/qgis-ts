@@ -1,6 +1,6 @@
 import { FC } from "react"
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
-import { useQgisMapContext } from "@qgis-ts/react";
+import { useQgisOlMapContext } from "@qgis-ts/react";
 import { useIntl } from "react-intl";
 
 import { deltaStep } from "./zoom-in";
@@ -16,7 +16,7 @@ export const ZoomOutButton: FC<Omit<BaseButtonProps, "children">> = (props) => {
     const { formatMessage } = useIntl();
 
     // Get the map from the context.
-    const { olMap } = useQgisMapContext();
+    const olMap = useQgisOlMapContext();
 
     if (!olMap) {
         return null;

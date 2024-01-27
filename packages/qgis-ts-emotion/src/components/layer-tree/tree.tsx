@@ -1,5 +1,7 @@
 import { FC, useCallback, useMemo } from "react";
-import { MapLayer, ROOT_LAYER_ID, useQgisMapContext } from "@qgis-ts/react";
+import {
+    MapLayer, ROOT_LAYER_ID, useQgisMapLayersContext
+} from "@qgis-ts/react";
 import { NodeApi, NodeRendererProps, Tree } from 'react-arborist';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -56,10 +58,10 @@ export const OverlayTree: FC<OverlayTreeProps> = ({
 }) => {
 
     // Get the map from the context.
-    const { layers: {
+    const {
         layerTree,
         overlays
-    } } = useQgisMapContext();
+    } = useQgisMapLayersContext();
 
     // The callback for creating a new layer or group.
     const onCreate = useCallback(({

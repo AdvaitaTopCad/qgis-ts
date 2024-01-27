@@ -7,7 +7,7 @@ import Point from 'ol/geom/Point.js';
 import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style.js';
 import { Vector as VectorSource } from 'ol/source.js';
 import { Vector as VectorLayer } from 'ol/layer.js';
-import { useQgisMapContext } from "@qgis-ts/react";
+import { useQgisOlMapContext } from "@qgis-ts/react";
 
 import { GeolocationTable } from "./table";
 import { GeolocationData } from "./defs";
@@ -53,7 +53,7 @@ export function useGeolocation() {
     const intl = useIntl();
 
     // Get the map from context.
-    const { olMap } = useQgisMapContext();
+    const olMap = useQgisOlMapContext();
 
     // Are we tracking?
     const [tracking, setTracking] = useState(false);

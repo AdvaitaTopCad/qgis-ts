@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 import { LayerID, MapLayer, ROOT_LAYER_ID } from '../layers/defs';
+import { Dispatch, useCallback, useMemo } from 'react';
 
 
 /**
@@ -304,3 +305,115 @@ export const {
     editOverlayLayer,
     reorderOverlayLayer,
 } = layersSlice.actions;
+
+
+/**
+ * The result of the `useLayersSlice` hook.
+ */
+export interface UseLayersSliceResult {
+
+    /**
+     * The callback to set the active base layer.
+     */
+    setActiveBaseLayer: (layerId: LayerID | undefined) => void;
+
+    /**
+     * The callback to set the active overlay layer.
+     */
+    setActiveOverlayLayer: (layerId: LayerID | undefined) => void;
+
+    /**
+     * The callback to add a base layer.
+     */
+    addBaseLayer: (layer: MapLayer, activate?: boolean) => void;
+
+    /**
+     * The callback to remove a base layer.
+     */
+    removeBaseLayer: (layerId: string) => void;
+
+    /**
+     * The callback to edit a base layer.
+     */
+    editBaseLayer: (layer: MapLayer, activate?: boolean) => void;
+
+    /**
+     * The callback to add an overlay layer.
+     */
+    addOverlayLayer: (layer: MapLayer, activate?: boolean) => void;
+
+    /**
+     * The callback to remove an overlay layer.
+     */
+    removeOverlayLayer: (layerId: string) => void;
+
+    /**
+     * The callback to edit an overlay layer.
+     */
+    editOverlayLayer: (layer: MapLayer, activate?: boolean) => void;
+
+    /**
+     * The callback to reorder a base layer.
+     */
+    reorderOverlayLayer: (
+        layer: LayerID,
+        parent: LayerID | undefined,
+        index: number,
+    ) => void;
+}
+
+
+/**
+ * Implementation for callbacks related to the layers.
+ */
+export const useLayersSlice = (dispatch: Dispatch<any>) => useMemo(() => ({
+
+    // The callback to set the active base layer.
+    setActiveBaseLayer: (layerId: LayerID | undefined) => {
+        dispatch(setActiveBaseLayer(layerId));
+    },
+
+    // The callback to set the active overlay layer.
+    setActiveOverlayLayer: (layerId: LayerID | undefined) => {
+        dispatch(setActiveOverlayLayer(layerId));
+    },
+
+    // The callback to add a base layer.
+    addBaseLayer: (layer: MapLayer, activate?: boolean) => {
+        dispatch(addBaseLayer({ layer, activate }));
+    },
+
+    // The callback to remove a base layer.
+    removeBaseLayer: (layerId: string) => {
+        dispatch(removeBaseLayer(layerId));
+    },
+
+    // The callback to edit a base layer.
+    editBaseLayer: (layer: MapLayer, activate?: boolean) => {
+        dispatch(editBaseLayer({ layer, activate }));
+    },
+
+    // The callback to add an overlay layer.
+    addOverlayLayer: (layer: MapLayer, activate?: boolean) => {
+        dispatch(addOverlayLayer({ layer, activate }));
+    },
+
+    // The callback to remove an overlay layer.
+    removeOverlayLayer: (layerId: string) => {
+        dispatch(removeOverlayLayer(layerId));
+    },
+
+    // The callback to edit an overlay layer.
+    editOverlayLayer: (layer: MapLayer, activate?: boolean) => {
+        dispatch(editOverlayLayer({ layer, activate }));
+    },
+
+    // The callback to reorder a base layer.
+    reorderOverlayLayer: (
+        layer: LayerID,
+        parent: LayerID | undefined,
+        index: number,
+    ) => {
+        dispatch(reorderOverlayLayer({ layer, parent, index }));
+    },
+}), []);

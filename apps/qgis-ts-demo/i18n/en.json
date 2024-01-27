@@ -10,6 +10,7 @@
   "map.buttons.my-loc.error.timeout": "The request to get user location timed out.",
   "map.buttons.my-loc.heading": "Heading [m/s]",
   "map.buttons.my-loc.position": "Position",
+  "map.buttons.my-loc.speed": "Speed [m/s]",
   "map.buttons.my-loc.tooltip": "Click to navigate to your location.",
   "map.buttons.over-layers.tip": "Edit layers",
   "map.buttons.zoom-in": "Zoom in",

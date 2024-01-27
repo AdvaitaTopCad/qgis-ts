@@ -1,6 +1,6 @@
 import { FC, useState, useRef, useCallback } from "react";
 import SatelliteIcon from '@mui/icons-material/Satellite';
-import { LayerID, useQgisMapContext } from "@qgis-ts/react";
+import { LayerID, useQgisMapContext, useQgisMapLayersContext, useQgisOlMapContext } from "@qgis-ts/react";
 import { useIntl } from "react-intl";
 import { Dialog, DialogActions } from "@mui/material";
 
@@ -32,15 +32,13 @@ export const BaseLayersButton: FC<Omit<BaseButtonProps, "children">> = (
     const { formatMessage } = useIntl();
 
     // Get the map from the context.
+    const olMap = useQgisOlMapContext();
+    const { bases } = useQgisMapLayersContext();
     const {
-        olMap,
         map: {
             view: {
                 size
             }
-        },
-        layers: {
-            bases
         },
         setActiveBaseLayer,
     } = useQgisMapContext();

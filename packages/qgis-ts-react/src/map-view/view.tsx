@@ -1,6 +1,5 @@
 import React, { CSSProperties, FC } from 'react';
-import { useQgisMapContext } from '@qgis-ts/react';
-import { FullScreen, useFullScreenHandle } from "react-full-screen";
+import { useQgisMapViewContext } from '@qgis-ts/react';
 
 // The style we use for the inner div.
 const sxDiv = {
@@ -14,7 +13,6 @@ const sxDiv = {
     margin: 0,
     padding: 0,
 };
-
 
 
 /**
@@ -40,10 +38,11 @@ export const QgisMapView: FC<QgisMapViewProps> = ({
     style = sxDiv,
     children
 }) => {
+    console.log('[QgisMapView] renders');
     const {
         mapId,
         mapRef,
-    } = useQgisMapContext()
+    } = useQgisMapViewContext()
     return (
         <div
             tabIndex={0}

@@ -12,22 +12,25 @@ import { BarProps, ZIndex, barSize } from "./defs";
  * To lay the children from right to left, set the `flexDirection` property
  * to `row-reverse`.
  */
-export const BottomBar: FC<BarProps> = ({ children, ...rest }) => (
-    <div
-        style={{
-            position: 'absolute',
-            bottom: 0,
-            left: barSize,
-            right: barSize,
-            minHeight: barSize,
-            backgroundColor: 'transparent',
-            zIndex: ZIndex.Bar,
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "wrap",
-            ...rest
-        }}
-    >
-        {children}
-    </div>
-)
+export const BottomBar: FC<BarProps> = ({ children, ...rest }) => {
+    console.log('[BottomBar] render');
+    return (
+        <div
+            style={{
+                position: 'absolute',
+                bottom: 0,
+                left: barSize,
+                right: barSize,
+                minHeight: barSize,
+                backgroundColor: 'transparent',
+                zIndex: ZIndex.Bar,
+                display: "flex",
+                flexDirection: "row",
+                flexWrap: "wrap",
+                ...rest
+            }}
+        >
+            {children}
+        </div>
+    )
+}

@@ -1,11 +1,12 @@
 import {
-    FC, ReactNode, useCallback, useEffect, useId, useReducer, useRef
+    FC, ReactNode, useCallback, useEffect, useId, useMemo,
+    useReducer, useRef
 } from 'react';
+import { useMemoDebugger } from 'use-debugger-hooks';
 import { combineReducers } from 'redux';
 import { IntlShape, useIntl } from 'react-intl';
 import fscreen from 'fscreen';
 
-import OlMap from 'ol/Map';
 import OlView, { ViewOptions } from 'ol/View';
 import { Coordinate } from 'ol/coordinate';
 import { defaults as olCreateInteractionDefaults } from 'ol/interaction';
@@ -21,7 +22,7 @@ import OlInteractionInteraction from 'ol/interaction/Interaction';
 import OlInteractionPointer from 'ol/interaction/Pointer';
 import OlInteractionModify from 'ol/interaction/Modify';
 import OlInteractionMouseWheelZoom, {
-    Options
+    Options as MouseWheelOptions
 } from 'ol/interaction/MouseWheelZoom';
 import OlInteractionSelect from 'ol/interaction/Select';
 import OlInteractionSnap from 'ol/interaction/Snap';
@@ -33,28 +34,45 @@ import OlControlOverviewMap from 'ol/control/OverviewMap';
 import OlControlScaleLine from 'ol/control/ScaleLine';
 import OlControlZoom from 'ol/control/Zoom';
 
-import { LayerID, MapLayer, ROOT_LAYER_ID } from '../layers';
-import { QgisMapContextProvider } from './context';
-import type { QgisMapContext } from './context';
+import { ROOT_LAYER_ID } from '../layers';
+import { QgisMapContextProvider } from './general-context';
+import type { QgisMapContext } from './general-context';
 import { reducerObject, initialState } from './store';
-import { setMapView } from './map.slice';
+import { updateMapInfoState } from './map.slice';
 import { setFullScreen } from './display.slice';
-import {
-    addBaseLayer, addOverlayLayer, editBaseLayer,
-    editOverlayLayer, removeBaseLayer, removeOverlayLayer, reorderOverlayLayer,
-    setActiveBaseLayer, setActiveOverlayLayer
-} from './layers.slice';
 import { GenreRegistry } from '../layers';
+import { ControllerData, createMap } from './create-map';
+import { QgisMapMouseContextProvider } from './mouse-context';
+import { QgisOlMapContextProvider } from './olmap-context';
+import { useLayersSlice } from './layers.slice';
+import { QgisMapLayersContextProvider } from './layers-context';
+import { QgisMapViewContextProvider } from './view-context';
 
 
 /**
  * Properties expected by the QGis map controller.
  */
 export interface QgisMapControllerProps {
+
+    /**
+     * Should the map update its internal state on mouse move?
+     *
+     * If true the position of the mouse pointer will be available in the
+     * context.
+     *
+     * @default true
+     */
+    trackMousePos?: boolean;
+
     /**
      * The initial view of the map.
      */
     initialView: ViewOptions;
+
+    /**
+     * Mouse wheel interaction options.
+     */
+    mouseWheelOptions?: MouseWheelOptions;
 
     /**
      * The children of the controller.
@@ -63,155 +81,25 @@ export interface QgisMapControllerProps {
 };
 
 
-/**
- * Internal data for the QGis map controller.
- */
-interface ControllerData {
-
-    /**
-     * The HTML element that contains the map.
-     */
-    mapNode: HTMLDivElement | null;
-
-    /**
-     * The map openlayers instance.
-     */
-    map: OlMap | null;
-
-    /**
-     * The translation provider.
-     */
-    intl: IntlShape;
-
-    /**
-     * Whether requests are paused.
-     */
-    requestsPaused: boolean;
-
-    /**
-     * Are we in the process of panning the map?
-     */
-    panning: boolean;
-
-    /**
-     * The timeout for unpausing the requests.
-     */
-    unpauseTimeout: number | null;
-
-    /**
-     * Unblocks the requests.
-     */
-    unblockRequests: () => void;
-
-    /**
-     * Updates the map info state.
-     */
-    updateMapInfoState: () => void;
-
-    /**
-     * The callback to handle a full screen change.
-     */
-    handleFullScreenChange: undefined | (() => void);
-}
-
-
-/**
- * Creates an openlayers map.
- */
-export function createMap(
-    data: ControllerData,
-    mouseState: any,
-    initialView: ViewOptions,
-    mapId: string
-) {
-
-    const interactions = olCreateInteractionDefaults({
-        // don't create these default interactions, but create
-        // them below with custom params
-        dragPan: false,
-        mouseWheelZoom: false,
-        keyboard: false
-    });
-    interactions.extend([
-        new OlInteractionDragPan({ kinetic: undefined }),
-        new OlInteractionMouseWheelZoom(mouseState),
-        new OlInteractionKeyboardZoom(),
-        new OlInteractionKeyboardPan(),
-    ]);
-
-    // const controls = olCreateControlDefaults({
-    //     zoom: false,
-    //     attribution: false,
-    //     rotateOptions: ({
-    //         tipLabel: data.intl.formatMessage({
-    //             id: "map.rotation.reset",
-    //             defaultMessage: "Reset rotation"
-    //         })
-    //     })
-    // });
-
-    data.map = new OlMap({
-        layers: [],
-        controls: [],
-        interactions: interactions,
-        keyboardEventTarget: data.mapNode as HTMLElement,
-        view: new OlView(initialView)
-    });
-
-    data.map.on('movestart', () => {
-        data.panning = true;
-        data.requestsPaused = true;
-    });
-    data.map.on('moveend', data.unblockRequests);
-    // data.map.on('singleclick', (event) => data.onClick(0, event.originalEvent, event.pixel));
-
-    // Set the target element to render this map into.
-    data.map.setTarget(mapId);
-
-    // Update the internal state.
-    data.updateMapInfoState();
-}
-
-
-/**
- * Updates the internal state based on current map info.
- *
- * @param map The map.
- * @param dispatch The dispatch function.
- */
-export const updateMapInfoState = (
-    map: OlMap,
-    dispatch: (value: any) => void
-) => {
-    const view = map.getView();
-    const c: Coordinate = view.getCenter() || [0, 0];
-    const mapSize = map.getSize();
-    const size = mapSize ? {
-        width: mapSize[0],
-        height: mapSize[1]
-    } : {
-        width: 0,
-        height: 0
-    };
-    dispatch(setMapView({
-        center: c,
-        zoom: view.getZoom(),
-        bbox: {
-            bounds: view.calculateExtent(mapSize),
-            rotation: view.getRotation(),
-        },
-        size,
-    }));
-}
+const defaultMouseWheelOptions: MouseWheelOptions = {
+    onFocusOnly: false,
+    maxDelta: 1,
+    duration: 250,
+    timeout: 80,
+    useAnchor: true,
+    constrainResolution: false,
+};
 
 
 /**
  * The QGis map controller.
  */
 export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
-    console.log('[QgisMapController] rendering');
+    // console.log('[QgisMapController] rendering');
     const {
         initialView,
+        mouseWheelOptions = defaultMouseWheelOptions,
+        trackMousePos = true,
         children
     } = props;
 
@@ -231,6 +119,10 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
             map: {
                 ...initialState.map,
                 homeView: initialView
+            },
+            mouse: {
+                ...initialState.mouse,
+                tracking: trackMousePos
             }
         })
     );
@@ -238,6 +130,7 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
 
     // This is where we keep internal map data not suitable for state.
     const mapData = useRef<ControllerData>({
+        dispatch,
         handleFullScreenChange: undefined,
         mapNode: null,
         intl,
@@ -245,10 +138,6 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
         requestsPaused: false,
         panning: false,
         unpauseTimeout: null,
-        updateMapInfoState: () => {
-            console.log('[QgisMapController] updateMapInfoState');
-            updateMapInfoState(mapData.current.map!, dispatch)
-        },
         unblockRequests: () => {
             console.log('[QgisMapController] unblockRequests');
             if (mapData.current.panning) {
@@ -256,14 +145,17 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
                     clearTimeout(mapData.current.unpauseTimeout);
                 }
                 mapData.current.unpauseTimeout = setTimeout(() => {
-                    mapData.current.updateMapInfoState();
+                    updateMapInfoState(
+                        mapData.current.map!,
+                        mapData.current.dispatch
+                    );
                     mapData.current.requestsPaused = false;
                     // TODO redraw?
                     mapData.current.unpauseTimeout = null;
                     mapData.current.panning = false;
                 }, 500) as unknown as number;
             }
-        }
+        },
     });
 
 
@@ -279,7 +171,7 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
         mapData.current.mapNode = node;
 
         // Create the map.
-        createMap(mapData.current, state.mouse, initialView, mapId);
+        createMap(mapData.current, mouseWheelOptions, initialView, mapId);
 
         // Initialize the full screen handler.
         const handleChange = () => {
@@ -289,7 +181,7 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
 
         // Install the full screen handler.
         fscreen.addEventListener('fullscreenchange', handleChange);
-    }, [intl, state.mouse, initialView]);
+    }, [intl, mouseWheelOptions, initialView]);
 
 
     // Recreate the layers when the internal state changes.
@@ -342,77 +234,60 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
         // dispatch(setFullScreen(value));
     }, []);
 
+    const {
+        mouse: mouseState,
+        display: displayState,
+        layers: layersState,
+        map: mapState
+    } = state;
+
+    // Provided both through the general context and through the layers context.
+    const layersSlice = useLayersSlice(dispatch);
 
     // Compute the value that will be provided through the context.
-    const value: QgisMapContext = {
-        mapId,
-        mapRef,
+    const value: QgisMapContext = useMemo(() => ({
         intl,
-        olMap: mapData.current.map,
 
-        // The current parent layer used to construct the tree.
-        groupLayerInTree: ROOT_LAYER_ID,
-
-        // The callback to set the active base layer.
-        setActiveBaseLayer: useCallback((layerId: LayerID | undefined) => {
-            dispatch(setActiveBaseLayer(layerId));
-        }, []),
-
-        // The callback to set the active overlay layer.
-        setActiveOverlayLayer: useCallback((layerId: LayerID | undefined) => {
-            dispatch(setActiveOverlayLayer(layerId));
-        }, []),
-
-        // The callback to add a base layer.
-        addBaseLayer: useCallback((layer: MapLayer, activate?: boolean) => {
-            dispatch(addBaseLayer({ layer, activate }));
-        }, []),
-
-        // The callback to remove a base layer.
-        removeBaseLayer: useCallback((layerId: string) => {
-            dispatch(removeBaseLayer(layerId));
-        }, []),
-
-        // The callback to edit a base layer.
-        editBaseLayer: useCallback((layer: MapLayer, activate?: boolean) => {
-            dispatch(editBaseLayer({ layer, activate }));
-        }, []),
-
-        // The callback to add an overlay layer.
-        addOverlayLayer: useCallback((layer: MapLayer, activate?: boolean) => {
-            dispatch(addOverlayLayer({ layer, activate }));
-        }, []),
-
-        // The callback to remove an overlay layer.
-        removeOverlayLayer: useCallback((layerId: string) => {
-            dispatch(removeOverlayLayer(layerId));
-        }, []),
-
-        // The callback to edit an overlay layer.
-        editOverlayLayer: useCallback((layer: MapLayer, activate?: boolean) => {
-            dispatch(editOverlayLayer({ layer, activate }));
-        }, []),
-
-        // The callback to reorder a base layer.
-        reorderOverlayLayer: useCallback((
-            layer: LayerID,
-            parent: LayerID | undefined,
-            index: number,
-        ) => {
-            dispatch(reorderOverlayLayer({ layer, parent, index }));
-        }, []),
+        // Actions from the layers slice.
+        ...layersSlice,
 
         // Callback for entering-exiting the full screen mode.
         setFullScreen: setFullScreenKB,
 
         // The entire state is public.
-        ...state
-    };
+        display: displayState,
+        map: mapState,
+    }), [
+        mapId, mapRef, intl, setFullScreenKB, displayState, mapState
+    ]) as QgisMapContext;
 
-    console.log("[QgisMapController] value: %O", value);
+    // Compute the value that will be provided through the layers context.
+    const layersValue = useMemo(() => {
+        console.log("[QgisMapController] layersValue: %O", layersState);
+        return ({
+            ...layersState,
+            ...layersSlice,
+
+            // The current parent layer used to construct the tree.
+            groupLayerInTree: ROOT_LAYER_ID,
+        });
+    }, [layersState, layersSlice]);
+
+    // console.log("[QgisMapController] value: %O", value);
     return (
         <QgisMapContextProvider value={value}>
-            {children}
+            <QgisMapMouseContextProvider value={mouseState}>
+                <QgisMapLayersContextProvider value={layersValue}>
+                    <QgisOlMapContextProvider value={mapData.current.map}>
+                        <QgisMapViewContextProvider value={useMemo(() => ({
+                            mapId,
+                            mapRef,
+                        }), [mapId, mapRef])}>
+                            {children}
+                        </QgisMapViewContextProvider>
+                    </QgisOlMapContextProvider>
+                </QgisMapLayersContextProvider>
+            </QgisMapMouseContextProvider>
         </QgisMapContextProvider>
     );
 };

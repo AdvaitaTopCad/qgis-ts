@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { QgisMapContextProvider, useQgisMapContext } from "../map";
-import { MapLayer } from "./defs";
+import { MapLayer, ROOT_LAYER_ID } from "./defs";
+import { QgisMapLayersContextProvider, useQgisMapLayersContext } from "../map/layers-context";
 
 
 /**
@@ -51,7 +52,7 @@ export function MapLayerComp<T extends MapLayer = MapLayer>({
         layerKind, settings
     );
 
-    const upperContext = useQgisMapContext();
+    const upperContext = useQgisMapLayersContext();
     const {
         addOverlayLayer,
         removeBaseLayer,
@@ -97,6 +98,11 @@ export function MapLayerComp<T extends MapLayer = MapLayer>({
         }
     }, [settings, activate]);
 
+    const contextValue = useMemo(() => ({
+        ...upperContext,
+        groupLayerInTree: settings?.id || ROOT_LAYER_ID
+    }), [upperContext, settings?.id]);
+
     if (layerKind === "none" || layerKind === "base") {
         // no need to wrap children in a provider.
         return children as JSX.Element;
@@ -106,11 +112,8 @@ export function MapLayerComp<T extends MapLayer = MapLayer>({
     }
 
     return (
-        <QgisMapContextProvider value={{
-            ...upperContext,
-            groupLayerInTree: settings!.id
-        }}>
+        <QgisMapLayersContextProvider value={contextValue}>
             {children}
-        </QgisMapContextProvider>
+        </QgisMapLayersContextProvider>
     );
 }
