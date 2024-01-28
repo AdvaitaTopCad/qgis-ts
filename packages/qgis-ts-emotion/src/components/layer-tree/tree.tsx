@@ -1,125 +1,93 @@
-import { FC, useCallback, useMemo } from "react";
-import {
-    MapLayer, ROOT_LAYER_ID, useQgisMapLayersContext
-} from "@qgis-ts/react";
-import { NodeApi, NodeRendererProps, Tree } from 'react-arborist';
-import { v4 as uuidv4 } from 'uuid';
+import { FC } from "react";
+import { MapLayer, } from "@qgis-ts/react";
+import { Tree } from 'react-arborist';
+import { styled } from '@mui/material';
 
-function Node({ node, style, dragHandle }: NodeRendererProps<any>) {
-    /* This node instance can do many things. See the API reference. */
-    return (
-        <div style={style} ref={dragHandle} onClick={() => node.toggle()}>
-            {node.isLeaf ? "🍁" : "🗀"} {node.data.name}
-        </div>
-    );
-}
+import { LayerSettings } from "./settings";
+import { useLayerTreeContext } from "./context";
+import { TreeNode } from "./layer-node";
+import { LayerTreeController } from "./controller";
+
+
+/**
+ * The wrapper that can be hidden.
+ */
+const HidableDiv = styled('div', {
+    shouldForwardProp: (prop) => prop !== 'hidden',
+    name: 'HidableDiv',
+})(({
+    hidden
+}) => ({
+    display: hidden ? 'none' : 'block',
+    margin: 0,
+    padding: 0,
+}));
 
 
 /**
  * The properties expected by the OverlayTree component.
+ *
+ * These will be passed to the Tree component.
  */
 export interface OverlayTreeProps {
-
+    rowHeight?: number;
+    overscanCount?: number;
+    width?: number | string;
+    height?: number;
+    indent?: number;
+    paddingTop?: number;
+    paddingBottom?: number;
+    padding?: number;
 };
-
-
-interface CreateProps<MapLayer> {
-    parentId: string | null;
-    parentNode: NodeApi<MapLayer> | null;
-    index: number;
-    type: "internal" | "leaf";
-}
-
-interface RenameProps {
-    id: string;
-    name: string;
-    node: NodeApi<MapLayer>;
-}
-
-interface MoveProps {
-    dragIds: string[];
-    dragNodes: NodeApi<MapLayer>[];
-    parentId: string | null;
-    parentNode: NodeApi<MapLayer> | null;
-    index: number;
-}
-
-interface DeleteProps {
-    ids: string[];
-    nodes: NodeApi<MapLayer>[];
-}
 
 
 /**
  * The tree of layers.
  */
-export const OverlayTree: FC<OverlayTreeProps> = ({
-
-}) => {
-
-    // Get the map from the context.
+export const OverlayTreeInner: FC<OverlayTreeProps> = (props) => {
     const {
-        layerTree,
-        overlays
-    } = useQgisMapLayersContext();
+        currentLayer,
+        treeData,
+        childrenAccessor,
+        onCreate,
+        onRename,
+        onMove,
+        onDelete
+    } = useLayerTreeContext();
 
-    // The callback for creating a new layer or group.
-    const onCreate = useCallback(({
-        parentId, index, type
-    }: CreateProps<MapLayer>) => {
-        const id = uuidv4();
-        return {
-            id,
-        };
-    }, []);
-
-    // The callback for renaming a layer or group.
-    const onRename = useCallback(({ id, name }: RenameProps) => {
-
-    }, []);
-
-    // The callback for moving a layer or group.
-    const onMove = useCallback(({ dragIds, parentId, index }: MoveProps) => {
-
-    }, []);
-
-    // The callback for deleting a layer or group.
-    const onDelete = useCallback(({ ids }: DeleteProps) => {
-
-    }, []);
-
-    // The accessor function for the children of a layer.
-    const childrenAccessor = useCallback((d: MapLayer) => (
-        (layerTree[d.id] || []).map((id) => overlays[id])
-    ), [layerTree, overlays]);
-
-    // The list of top-level layers.
-    const topLevelIDs = layerTree[ROOT_LAYER_ID] || [];
-    const data: MapLayer[] = useMemo(() => (
-        topLevelIDs.map((id) => overlays[id])
-    ), [topLevelIDs, overlays]);
-
-
+    console.log("[OverlayTree] data=%O", treeData);
     return (
-        <Tree<MapLayer>
-            data={data}
-            // initialData={data}
-            childrenAccessor={childrenAccessor}
-            // idAccessor?: string | ((d: T) => string);
-            onCreate={onCreate}
-            onRename={onRename}
-            onMove={onMove}
-            onDelete={onDelete}
-            openByDefault={true}
-            width={600}
-            height={1000}
-            indent={24}
-            rowHeight={36}
-            paddingTop={30}
-            paddingBottom={10}
-            padding={25 /* sets both */}
-        >
-            {Node}
-        </Tree >
+        <>
+            <HidableDiv hidden={currentLayer !== null}>
+                <Tree<MapLayer>
+                    data={treeData}
+                    childrenAccessor={childrenAccessor}
+                    // idAccessor?: string | ((d: T) => string);
+                    onCreate={onCreate}
+                    onRename={onRename}
+                    onMove={onMove}
+                    onDelete={onDelete}
+                    openByDefault={true}
+                    {...props}
+                >
+                    {TreeNode}
+                </Tree >
+            </HidableDiv>
+            <HidableDiv hidden={currentLayer === null}>
+                <LayerSettings />
+            </HidableDiv>
+        </>
     );
+};
+
+
+/**
+ * The tree of layers.
+ */
+export const OverlayTree: FC<OverlayTreeProps> = (props) => {
+    return (
+        <LayerTreeController>
+            <OverlayTreeInner {...props} />
+        </LayerTreeController>
+    )
 };

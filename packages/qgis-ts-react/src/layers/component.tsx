@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { QgisMapContextProvider, useQgisMapContext } from "../map";
-import { MapLayer, ROOT_LAYER_ID } from "./defs";
+import { GROUP_GENRE_ID, MapLayer, ROOT_LAYER_ID } from "./defs";
 import { QgisMapLayersContextProvider, useQgisMapLayersContext } from "../map/layers-context";
 
 
@@ -80,7 +80,10 @@ export function MapLayerComp<T extends MapLayer = MapLayer>({
             } else if (layerKind === "overlay") {
                 addOverlayLayer(adjusted, activate);
             } else if (layerKind === "group") {
-                addOverlayLayer(adjusted, activate);
+                addOverlayLayer({
+                    ...adjusted,
+                    genre: GROUP_GENRE_ID
+                }, activate);
             } else {
                 throw new Error(`Invalid layer kind: ${layerKind}`);
             }

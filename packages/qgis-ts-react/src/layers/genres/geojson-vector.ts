@@ -39,10 +39,25 @@ export class GeoJsonVectorGenre extends LayerGenre {
 
     createLayers(map: OlMap, {
         vectorOptions,
+        // Omitted
+        genre,
+        parent,
+        title,
+        id,
+        // General layer settings
+        opacity,
+        visible,
+        extent,
+        zIndex,
+        minResolution,
+        maxResolution,
+        minZoom,
+        maxZoom,
+        background,
+        // The rest are for the source.
         ...settings
     }: GeoJsonVector): void {
-        map.getLayers().push(
-            new VectorLayer({
+        const newLayer =new VectorLayer({
                 source: new VectorSource({
                     // TODO: If performance is the primary concern, and
                     // features are not going to be modified or
@@ -51,9 +66,20 @@ export class GeoJsonVectorGenre extends LayerGenre {
                     format: new GeoJSON(),
                     ...settings,
                 }),
+                opacity,
+                visible,
+                extent,
+                zIndex,
+                minResolution,
+                maxResolution,
+                minZoom,
+                maxZoom,
+                background,
                 ...vectorOptions,
-            })
-        );
+            });
+
+        map.getLayers().push(newLayer);
+        console.log("[GeoJsonVectorGenre] createLayers %O", newLayer);
     }
 
     syncLayers(map: OlMap, match: LayerMatch): void {

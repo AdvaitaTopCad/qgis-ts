@@ -1,6 +1,6 @@
 import OlMap from 'ol/Map';
 import { GenreID, LayerGenre, LayerMatch } from "./base";
-import { LayerID, MapLayer } from '../defs';
+import { GROUP_GENRE_ID, LayerID, MapLayer } from '../defs';
 import BaseLayer from 'ol/layer/Base';
 import { Collection } from 'ol';
 
@@ -42,6 +42,9 @@ export class GenreRegistry {
      * @returns The genre with the given ID.
      */
     public getGenre(id: GenreID): LayerGenre {
+        if (id === GROUP_GENRE_ID) {
+            throw new Error(`The group genre is not registered.`);
+        }
         const result = this.genres[id];
         if (!result) {
             throw new Error(`Genre with ID '${id}' is not registered.`);
@@ -109,7 +112,7 @@ export class GenreRegistry {
                 return;
             }
 
-            // Is this part of an overlay?
+            // Is this part of the overlay?
             const overlay = overlays[layerSettings.id];
             if (overlay) {
                 // Do we already have a match for this overlay?
@@ -154,7 +157,7 @@ export class GenreRegistry {
         }
 
         // Go trough each incoming overlay settings object.
-        for (const overlay of Object.values(overlays)) {
+        for (const overlay of Object.values(overlays).reverse()) {
             // Do we already have a match for this overlay?
             let match = overlayMatches[overlay.id];
             if (match) {
@@ -165,11 +168,10 @@ export class GenreRegistry {
                     // Deffer to the genre to create/update the layers.
                     match.genre.syncLayers(map, match);
                 }
-            } else {
+            } else if (overlay.genre !== GROUP_GENRE_ID) {
                 // We need to create the layers.
                 this.getGenre(overlay.genre).createLayers(map, overlay);
             }
         }
     }
 }
-

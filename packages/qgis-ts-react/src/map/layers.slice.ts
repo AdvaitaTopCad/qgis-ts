@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 import { LayerID, MapLayer, ROOT_LAYER_ID } from '../layers/defs';
-import { Dispatch, useCallback, useMemo } from 'react';
+import { Dispatch, useMemo } from 'react';
 
 
 /**

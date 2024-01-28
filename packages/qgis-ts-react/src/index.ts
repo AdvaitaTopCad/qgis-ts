@@ -28,12 +28,21 @@ export {
 export type {
     LayerID, MapLayer,
     MapLayerProps,
-    GenreID
+    GenreID,
+    LayerMatch,
+    GeoJsonVector,
+    OsmTileRaster,
+    XyzTileRaster
 } from './layers';
 export {
     ROOT_LAYER_ID,
+    GROUP_GENRE_ID,
     MapLayerComp,
-    LayerGenre, GenreRegistry
+    LayerGenre,
+    GenreRegistry,
+    GeoJsonVectorGenre,
+    OsmTileRasterGenre,
+    XyzTileRasterGenre
 } from './layers';
 
 

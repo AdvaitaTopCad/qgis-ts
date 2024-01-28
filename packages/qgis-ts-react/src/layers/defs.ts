@@ -1,3 +1,4 @@
+import { Options as LayerOptions} from 'ol/layer/Base';
 import type { GenreID } from "./genres/base";
 
 
@@ -13,12 +14,19 @@ export type LayerID = string;
 export const ROOT_LAYER_ID: LayerID = '_ro_ot_';
 
 
+
+/**
+ * The genre for group layers.
+ */
+export const GROUP_GENRE_ID: GenreID = '_gr_oup_';
+
+
 /**
  * Information about a layer in a map.
  *
  * One such layer may generate 0 or more ol layers.
  */
-export interface MapLayer {
+export interface MapLayer extends Omit<LayerOptions, "properties" | "className"> {
     /**
      * The ID of the layer.
      */

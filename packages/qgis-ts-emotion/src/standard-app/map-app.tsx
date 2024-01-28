@@ -1,6 +1,13 @@
 import { FC } from "react";
-import { BottomBar, LeftBar, MapLayerComp, QgisMapController, QgisMapControllerProps, QgisMapView, RightBar, ScaleBar, TopBar } from "@qgis-ts/react";
-import { BaseLayersButton, FullScreenSwitcher, HomeButton, MyLocationButton, OverlayLayersButton, ZoomInButton, ZoomOutButton } from "../buttons";
+import {
+    BottomBar, LeftBar, MapLayerComp, QgisMapController,
+    QgisMapControllerProps, QgisMapView, RightBar, ScaleBar, TopBar
+} from "@qgis-ts/react";
+
+import {
+    BaseLayersButton, FullScreenSwitcher, HomeButton, MyLocationButton,
+    OverlayLayersButton, ZoomInButton, ZoomOutButton
+} from "../buttons";
 import { QgisAppBar } from "../components";
 
 
@@ -33,6 +40,7 @@ const viewStyle = {
  * A map that covers the whole screen.
  */
 export const QgisStandardApp: FC<QgisStandardAppProps> = ({
+    children,
     ...rest
 }) => {
     return (
@@ -54,17 +62,7 @@ export const QgisStandardApp: FC<QgisStandardAppProps> = ({
                 </RightBar>
                 <TopBar />
             </QgisMapView>
-            <MapLayerComp>
-                <MapLayerComp
-                    layerKind="base"
-                    activate
-                    settings={{
-                        id: "osm",
-                        genre: 'osm-tile-raster',
-                        title: 'OpenStreetMap',
-                    }}
-                />
-            </MapLayerComp>
+            {children}
         </QgisMapController>
     );
 }

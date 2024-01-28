@@ -23,6 +23,7 @@ describe("XyzTileRasterGenre", () => {
     xit("should create layers with correct settings", () => {
         const tileOptions: TileOptions<TileSourceType> = { opacity: 0.5 };
         const settings: XyzTileRaster = {
+            title: "Test",
             genre: "xyz-tile-raster",
             tileOptions,
             id: "test",

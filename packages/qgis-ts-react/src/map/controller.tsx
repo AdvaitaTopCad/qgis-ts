@@ -195,11 +195,11 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
             : undefined;
         GenreRegistry.i.syncLayers(
             mapData.current.map, baseLayer, state.layers.overlays
-        )
+        );
         console.log(
             '[QgisMapController] after recreating map has %d layers',
             mapData.current.map.getLayers().getLength()
-        )
+        );
     }, [state.layers]);
 
 
@@ -234,6 +234,7 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
         // dispatch(setFullScreen(value));
     }, []);
 
+
     const {
         mouse: mouseState,
         display: displayState,
@@ -241,8 +242,10 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
         map: mapState
     } = state;
 
+
     // Provided both through the general context and through the layers context.
     const layersSlice = useLayersSlice(dispatch);
+
 
     // Compute the value that will be provided through the context.
     const value: QgisMapContext = useMemo(() => ({
@@ -273,6 +276,7 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
         });
     }, [layersState, layersSlice]);
 
+    
     // console.log("[QgisMapController] value: %O", value);
     return (
         <QgisMapContextProvider value={value}>
