@@ -1,19 +1,19 @@
-export type { QgisMapContext } from './general-context';
+export type { QgisMapContext } from './general.context';
 export {
     QgisMapContextProvider,
     useQgisMapContext
-} from './general-context';
+} from './general.context';
 
 
 export type { QgisMapState, QgisMapDispatch } from './store';
 export { store } from './store';
 
 
-export type { QgisMapDisplayContext, } from './display-context';
+export type { QgisMapDisplayContext, } from './display.context';
 export {
     QgisMapDisplayContextProvider,
     useQgisMapDisplayContext
-} from './display-context';
+} from './display.context';
 
 
 export type { DisplayState } from './display.slice';
@@ -24,25 +24,25 @@ export type { QgisMapControllerProps } from './controller';
 export { QgisMapController } from './controller';
 
 
-export type { QgisMapMouseContext, } from './mouse-context';
+export type { QgisMapMouseContext, } from './mouse.context';
 export {
     QgisMapMouseContextProvider,
     useQgisMapMouseContext
-} from './mouse-context';
+} from './mouse.context';
 
 
-export type { QgisOlMapContext, } from './olmap-context';
+export type { QgisOlMapContext, } from './olmap.context';
 export {
     QgisOlMapContextProvider,
     useQgisOlMapContext
-} from './olmap-context';
+} from './olmap.context';
 
 
-export type { QgisMapLayersContext, } from './layers-context';
+export type { QgisMapLayersContext, } from './layers.context';
 export {
     QgisMapLayersContextProvider,
     useQgisMapLayersContext
-} from './layers-context';
+} from './layers.context';
 
 
 export type {
@@ -53,8 +53,8 @@ export {
 } from './layers.slice';
 
 
-export type { QgisMapViewContext, } from './view-context';
+export type { QgisMapViewContext, } from './view.context';
 export {
     QgisMapViewContextProvider,
     useQgisMapViewContext
-} from './view-context';
+} from './view.context';

@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { QgisMapContextProvider, useQgisMapContext } from "../map";
 import { GROUP_GENRE_ID, MapLayer, ROOT_LAYER_ID } from "./defs";
-import { QgisMapLayersContextProvider, useQgisMapLayersContext } from "../map/layers-context";
+import { QgisMapLayersContextProvider, useQgisMapLayersContext } from "../map/layers.context";
 
 
 /**

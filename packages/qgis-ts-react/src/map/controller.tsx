@@ -2,12 +2,16 @@ import {
     FC, ReactNode, useCallback, useEffect, useId, useMemo,
     useReducer, useRef
 } from 'react';
-import { combineReducers } from 'redux';
-import { IntlShape, useIntl } from 'react-intl';
-import fscreen from 'fscreen';
+import proj4 from 'proj4';
+import { register } from 'ol/proj/proj4.js';
+import { get as getProjection, } from 'ol/proj';
 
-import OlView, { ViewOptions } from 'ol/View';
-import { Coordinate } from 'ol/coordinate';
+import { combineReducers } from 'redux';
+import { useIntl } from 'react-intl';
+import fscreen from 'fscreen';
+import Projection from "ol/proj/Projection";
+
+import { ViewOptions } from 'ol/View';
 import { defaults as olCreateInteractionDefaults } from 'ol/interaction';
 import OlInteractionDoubleClickZoom from 'ol/interaction/DoubleClickZoom';
 import OlInteractionDragPan from 'ol/interaction/DragPan';
@@ -28,25 +32,65 @@ import OlInteractionSnap from 'ol/interaction/Snap';
 // import OlInteractionTransform from 'ol-ext/interaction/Transform';
 import OlInteractionTranslate from 'ol/interaction/Translate';
 
-import { defaults as olCreateControlDefaults } from 'ol/control';
 import OlControlOverviewMap from 'ol/control/OverviewMap';
-import OlControlScaleLine from 'ol/control/ScaleLine';
-import OlControlZoom from 'ol/control/Zoom';
 
 import { ROOT_LAYER_ID } from '../layers';
-import { QgisMapContextProvider } from './general-context';
-import type { QgisMapContext } from './general-context';
+import { QgisMapContextProvider } from './general.context';
+import type { QgisMapContext } from './general.context';
 import { reducerObject, initialState } from './store';
 import { updateMapInfoState } from './map.slice';
-import { setButtonSize, setFullScreen, useDisplaySlice } from './display.slice';
+import { setFullScreen, useDisplaySlice } from './display.slice';
 import { GenreRegistry } from '../layers';
 import { ControllerData, createMap } from './create-map';
-import { QgisMapMouseContextProvider } from './mouse-context';
-import { QgisOlMapContextProvider } from './olmap-context';
+import { QgisMapMouseContextProvider } from './mouse.context';
+import { QgisOlMapContextProvider } from './olmap.context';
 import { useLayersSlice } from './layers.slice';
-import { QgisMapLayersContextProvider } from './layers-context';
-import { QgisMapViewContextProvider } from './view-context';
-import { QgisMapDisplayContextProvider } from './display-context';
+import { QgisMapLayersContextProvider } from './layers.context';
+import { QgisMapViewContextProvider } from './view.context';
+import { QgisMapDisplayContextProvider } from './display.context';
+import { QgisMapProjContextProvider } from './proj.context';
+import { ProjectionId, useProjSlice } from './proj.slice';
+
+
+interface ProjectionDef {
+    projDef: string;
+    extent?: [number, number, number, number];
+}
+
+type InitialProjections = Record<ProjectionId, Projection | ProjectionDef>;
+
+
+// Helper function for the initial values provided to the projection context.
+const computeProjections = (
+    values?: InitialProjections, defaults: Record<ProjectionId, Projection> = {}
+) => {
+    if (!values) {
+        return defaults;
+    }
+
+    // Make sure that all projections are defined.
+    Object.keys(
+        values
+    ).filter(
+        key => !(values[key] instanceof Projection)
+    ).forEach(
+        key => { proj4.defs(key, (values[key] as ProjectionDef).projDef); }
+    );
+
+    // Make projections defined in proj4.
+    register(proj4);
+
+    // Create the projection objects.
+    return Object.keys(values).reduce((acc, key) => {
+        const value = values[key];
+        if (value instanceof Projection) {
+            acc[key] = value;
+        } else {
+            acc[key] = getProjection(key)!;
+        }
+        return acc;
+    }, {} as Record<ProjectionId, Projection>);
+}
 
 
 /**
@@ -75,6 +119,24 @@ export interface QgisMapControllerProps {
     mouseWheelOptions?: MouseWheelOptions;
 
     /**
+     * The initial projection.
+     *
+     * @default "EPSG:4326" (that is, WGS84)
+     */
+    initialProjection?: ProjectionId;
+
+    /**
+     * The initial list of projections.
+     *
+     * The keys are the translation keys used to get the label of the
+     * projection. The value may be a projection object or an object with
+     * the following properties:
+     * - projDef: the definition of the projection.
+     * - extent: the extent of the projection.
+     */
+    initialProjections?: InitialProjections;
+
+    /**
      * The children of the controller.
      */
     children?: ReactNode;
@@ -100,6 +162,8 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
         initialView,
         mouseWheelOptions = defaultMouseWheelOptions,
         trackMousePos = true,
+        initialProjections,
+        initialProjection,
         children
     } = props;
 
@@ -123,6 +187,14 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
             mouse: {
                 ...initialState.mouse,
                 tracking: trackMousePos
+            },
+            proj: {
+                ...initialState.proj,
+                projections: computeProjections(
+                    initialProjections,
+                    initialState.proj.projections
+                ),
+                projection: initialProjection || initialState.proj.projection
             }
         })
     );
@@ -235,17 +307,20 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
     }, []);
 
 
+    // Split the state into slices.
     const {
         mouse: mouseState,
         display: displayState,
         layers: layersState,
-        map: mapState
+        map: mapState,
+        proj: projState
     } = state;
 
 
     // Provided both through the general context and through the layers context.
     const layersSlice = useLayersSlice(dispatch);
     const displaySlice = useDisplaySlice(dispatch);
+    const projSlice = useProjSlice(dispatch);
 
     // Compute the value that will be provided through the context.
     const value: QgisMapContext = useMemo(() => ({
@@ -276,7 +351,7 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
 
     // Compute the value that will be provided through the display context.
     const displayValue = useMemo(() => {
-        // console.log("[QgisMapController] displayValue: %O", layersState);
+        // console.log("[QgisMapController] displayValue: %O", displayState);
         // TODO renders too much.
         return ({
             ...displayState,
@@ -288,6 +363,17 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
     }, [displayState, displaySlice]);
 
 
+    // Compute the value that will be provided through the projection context.
+    const projValue = useMemo(() => {
+        // console.log("[QgisMapController] projValue: %O", layersState);
+        // TODO renders too much.
+        return ({
+            ...projState,
+            ...projSlice,
+        });
+    }, [projState, projSlice]);
+
+
     // console.log("[QgisMapController] value: %O", value);
     return (
         <QgisMapContextProvider value={value}>
@@ -295,12 +381,14 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
                 <QgisMapMouseContextProvider value={mouseState}>
                     <QgisMapLayersContextProvider value={layersValue}>
                         <QgisOlMapContextProvider value={mapData.current.map}>
-                            <QgisMapViewContextProvider value={useMemo(() => ({
-                                mapId,
-                                mapRef,
-                            }), [mapId, mapRef])}>
-                                {children}
-                            </QgisMapViewContextProvider>
+                            <QgisMapProjContextProvider value={projValue}>
+                                <QgisMapViewContextProvider value={useMemo(() => ({
+                                    mapId,
+                                    mapRef,
+                                }), [mapId, mapRef])}>
+                                    {children}
+                                </QgisMapViewContextProvider>
+                            </QgisMapProjContextProvider>
                         </QgisOlMapContextProvider>
                     </QgisMapLayersContextProvider>
                 </QgisMapMouseContextProvider>

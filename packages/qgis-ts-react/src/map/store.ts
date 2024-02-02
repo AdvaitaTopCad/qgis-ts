@@ -4,12 +4,14 @@ import { displaySlice } from './display.slice';
 import { mouseSlice } from './mouse.slice';
 import { mapSlice } from './map.slice';
 import { layersSlice } from './layers.slice';
+import { projSlice } from './proj.slice';
 
 export const reducerObject = {
     [displaySlice.name]: displaySlice.reducer,
     [mouseSlice.name]: mouseSlice.reducer,
     [mapSlice.name]: mapSlice.reducer,
     [layersSlice.name]: layersSlice.reducer,
+    [projSlice.name]: projSlice.reducer,
 };
 
 export const initialState = {
@@ -17,6 +19,7 @@ export const initialState = {
     [mouseSlice.name]: mouseSlice.getInitialState(),
     [mapSlice.name]: mapSlice.getInitialState(),
     [layersSlice.name]: layersSlice.getInitialState(),
+    [projSlice.name]: projSlice.getInitialState(),
 };
 
 export const store = configureStore({

@@ -5,6 +5,8 @@ import OlControlMousePosition, {
 
 import { styled } from "@mui/material";
 import { useOlControl } from "./use-ol-control";
+import { useQgisMapProjContext } from "../map/proj.context";
+import { useIntl } from "react-intl";
 
 
 /**
@@ -55,16 +57,59 @@ export type MousePositionProps = Omit<MousePositionOptions, "target">;
  * a distance on the map to the corresponding distance on the ground.
  */
 export const MousePosition: FC<MousePositionProps> = (props) => {
-    const data = useOlControl(OlControlMousePosition, props);
+    const {
+        projection,
+        projections,
+        setActiveProj
+    } = useQgisMapProjContext();
+    console.log("[MousePosition] projection=%O", projection);
+    console.log("[MousePosition] projections=%O", projections);
+
+    const { formatMessage } = useIntl();
+
+    const data = useOlControl(OlControlMousePosition, {
+        projection: projections[projection],
+        coordinateFormat: (coordinate: any) => {
+            const units = projections[projection].getUnits();
+            let digits = 2;
+            if (units === "degrees") {
+                digits = 7;
+            } else if (units === "m") {
+                digits = 3;
+            } else if (units === "ft") {
+                digits = 1;
+            } else if (units === "us-ft") {
+                digits = 1;
+            } else if (units === "pixels") {
+                digits = 0;
+            } else if (units === "tile-pixels") {
+                digits = 0;
+            } else if (units === "radians") {
+                digits = 5;
+            }
+            return coordinate.map(
+                (value: any) => value.toFixed(digits)
+            ).join(", ");
+        },
+        ...props
+    });
+
     return (
         <>
             <StyledDiv ref={data.ref}>
-                <select id="projection" title="Projection">
-                    <option value="EPSG:4326">EPSG:4326</option>
-                    <option value="EPSG:3857">EPSG:3857</option>
-                    <option value="EPSG:25832">EPSG:25832</option>
-                    <option value="EPSG:25833">EPSG:25833</option>
-                    <option value="EPSG:25834">EPSG:25834</option>
+                <select
+                    id="projection"
+                    title={formatMessage({ id: "map.projection" })}
+                    value={projection}
+                    onChange={(event) => {
+                        setActiveProj(event.target.value);
+                    }}
+                >
+                    {Object.keys(projections).map((key) => (
+                        <option key={key} value={key}>
+                            {formatMessage({ id: key })}
+                        </option>
+                    ))}
                 </select>
             </StyledDiv>
         </>
