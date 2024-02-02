@@ -2,7 +2,6 @@ import {
     FC, ReactNode, useCallback, useEffect, useId, useMemo,
     useReducer, useRef
 } from 'react';
-import { useMemoDebugger } from 'use-debugger-hooks';
 import { combineReducers } from 'redux';
 import { IntlShape, useIntl } from 'react-intl';
 import fscreen from 'fscreen';
@@ -39,7 +38,7 @@ import { QgisMapContextProvider } from './general-context';
 import type { QgisMapContext } from './general-context';
 import { reducerObject, initialState } from './store';
 import { updateMapInfoState } from './map.slice';
-import { setFullScreen } from './display.slice';
+import { setButtonSize, setFullScreen, useDisplaySlice } from './display.slice';
 import { GenreRegistry } from '../layers';
 import { ControllerData, createMap } from './create-map';
 import { QgisMapMouseContextProvider } from './mouse-context';
@@ -47,6 +46,7 @@ import { QgisOlMapContextProvider } from './olmap-context';
 import { useLayersSlice } from './layers.slice';
 import { QgisMapLayersContextProvider } from './layers-context';
 import { QgisMapViewContextProvider } from './view-context';
+import { QgisMapDisplayContextProvider } from './display-context';
 
 
 /**
@@ -245,7 +245,7 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
 
     // Provided both through the general context and through the layers context.
     const layersSlice = useLayersSlice(dispatch);
-
+    const displaySlice = useDisplaySlice(dispatch);
 
     // Compute the value that will be provided through the context.
     const value: QgisMapContext = useMemo(() => ({
@@ -254,15 +254,12 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
         // Actions from the layers slice.
         ...layersSlice,
 
-        // Callback for entering-exiting the full screen mode.
-        setFullScreen: setFullScreenKB,
-
         // The entire state is public.
-        display: displayState,
         map: mapState,
     }), [
-        mapId, mapRef, intl, setFullScreenKB, displayState, mapState
+        mapId, mapRef, intl, setFullScreenKB, mapState
     ]) as QgisMapContext;
+
 
     // Compute the value that will be provided through the layers context.
     const layersValue = useMemo(() => {
@@ -276,22 +273,37 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
         });
     }, [layersState, layersSlice]);
 
-    
+
+    // Compute the value that will be provided through the display context.
+    const displayValue = useMemo(() => {
+        console.log("[QgisMapController] displayValue: %O", layersState);
+        return ({
+            ...displayState,
+            ...displaySlice,
+
+            // Callback for entering-exiting the full screen mode.
+            setFullScreen: setFullScreenKB,
+        });
+    }, [displayState, displaySlice]);
+
+
     // console.log("[QgisMapController] value: %O", value);
     return (
         <QgisMapContextProvider value={value}>
-            <QgisMapMouseContextProvider value={mouseState}>
-                <QgisMapLayersContextProvider value={layersValue}>
-                    <QgisOlMapContextProvider value={mapData.current.map}>
-                        <QgisMapViewContextProvider value={useMemo(() => ({
-                            mapId,
-                            mapRef,
-                        }), [mapId, mapRef])}>
-                            {children}
-                        </QgisMapViewContextProvider>
-                    </QgisOlMapContextProvider>
-                </QgisMapLayersContextProvider>
-            </QgisMapMouseContextProvider>
+            <QgisMapDisplayContextProvider value={displayValue}>
+                <QgisMapMouseContextProvider value={mouseState}>
+                    <QgisMapLayersContextProvider value={layersValue}>
+                        <QgisOlMapContextProvider value={mapData.current.map}>
+                            <QgisMapViewContextProvider value={useMemo(() => ({
+                                mapId,
+                                mapRef,
+                            }), [mapId, mapRef])}>
+                                {children}
+                            </QgisMapViewContextProvider>
+                        </QgisOlMapContextProvider>
+                    </QgisMapLayersContextProvider>
+                </QgisMapMouseContextProvider>
+            </QgisMapDisplayContextProvider>
         </QgisMapContextProvider>
     );
 };

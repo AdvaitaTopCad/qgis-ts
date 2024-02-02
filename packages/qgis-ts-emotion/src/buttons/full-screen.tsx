@@ -1,5 +1,5 @@
 import { Tooltip } from "@mui/material";
-import { useQgisMapContext } from "@qgis-ts/react";
+import { useQgisMapContext, useQgisMapDisplayContext } from "@qgis-ts/react";
 import { FC } from "react";
 import { useIntl } from "react-intl";
 import { styled } from '@mui/system';
@@ -67,7 +67,6 @@ const StyledButton = styled("button", {
 }));
 
 
-
 /**
  * A button to switch between full screen and normal mode.
  */
@@ -75,10 +74,17 @@ export const FullScreenSwitcher: FC<FullScreenSwitcherProps> = ({
     side = "tr"
 }) => {
     // Get the map from the context.
-    const { display: { fullScreen }, setFullScreen } = useQgisMapContext();
+    const {
+        fullScreen, setFullScreen, settingsOpen
+    } = useQgisMapDisplayContext();
 
     // Internationalization provider.
     const { formatMessage } = useIntl();
+
+    // Shows on top of the drawer.
+    if (settingsOpen) {
+        return null;
+    }
 
     return (
         <Tooltip title={formatMessage({

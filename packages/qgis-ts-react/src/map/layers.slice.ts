@@ -1,8 +1,8 @@
+import { Dispatch, useMemo } from 'react';
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 import { LayerID, MapLayer, ROOT_LAYER_ID } from '../layers/defs';
-import { Dispatch, useMemo } from 'react';
 
 
 /**

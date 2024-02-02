@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { BarProps, ZIndex, barSize } from "./defs";
+import { useQgisMapDisplayContext } from "../map";
 
 
 /**
@@ -13,15 +14,18 @@ import { BarProps, ZIndex, barSize } from "./defs";
  * to `row-reverse`.
  */
 export const BottomBar: FC<BarProps> = ({ children, ...rest }) => {
-    console.log('[BottomBar] render');
+    const { buttonSize } = useQgisMapDisplayContext();
+    const finalSize = buttonSize === "small" ? "32px" : (
+        buttonSize === "medium" ? "40px" : "48px"
+    );
     return (
         <div
             style={{
                 position: 'absolute',
                 bottom: 0,
-                left: barSize,
-                right: barSize,
-                minHeight: barSize,
+                left: finalSize,
+                right: finalSize,
+                minHeight: finalSize,
                 backgroundColor: 'transparent',
                 zIndex: ZIndex.Bar,
                 display: "flex",

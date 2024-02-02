@@ -68,7 +68,7 @@ export const OverlayLayersButton: FC<Omit<BaseButtonProps, "children">> = (
                 {...props}
                 onClick={onClick}
             >
-                <AccountTreeIcon />
+                <AccountTreeIcon fontSize="inherit" />
             </BaseButton>
             <OverlayContainer
                 open={open === "simple"}

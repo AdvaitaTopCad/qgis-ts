@@ -6,9 +6,10 @@ import {
 
 import {
     BaseLayersButton, FullScreenSwitcher, HomeButton, MyLocationButton,
-    OverlayLayersButton, ZoomInButton, ZoomOutButton
+    OverlayLayersButton, SettingsButton, ZoomInButton, ZoomOutButton
 } from "../buttons";
 import { QgisAppBar } from "../components";
+import { SettingsDrawer } from "../settings";
 
 
 /**
@@ -53,6 +54,7 @@ export const QgisStandardApp: FC<QgisStandardAppProps> = ({
                 </BottomBar>
                 <LeftBar />
                 <RightBar>
+                    <SettingsButton />
                     <ZoomOutButton />
                     <ZoomInButton />
                     <BaseLayersButton />
@@ -63,6 +65,7 @@ export const QgisStandardApp: FC<QgisStandardAppProps> = ({
                 <TopBar />
             </QgisMapView>
             {children}
+            <SettingsDrawer />
         </QgisMapController>
     );
 }

@@ -31,7 +31,7 @@ export const ZoomOutButton: FC<Omit<BaseButtonProps, "children">> = (props) => {
             {...props}
             onClick={() => changeZoom(olMap, -deltaStep)}
         >
-            <RemoveCircleIcon />
+            <RemoveCircleIcon fontSize="inherit" />
         </BaseButton>
     )
 }

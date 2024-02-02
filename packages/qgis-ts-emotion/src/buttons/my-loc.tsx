@@ -33,7 +33,7 @@ export const MyLocationButton: FC<Props> = (props) => {
             leaveDelay={typeof tooltip === "string" ? 200 : 2000}
             enterDelay={typeof tooltip === "string" ? 1000 : 500}
         >
-            <MyLocationIcon />
+            <MyLocationIcon fontSize="inherit" />
         </BaseButton>
     )
 }

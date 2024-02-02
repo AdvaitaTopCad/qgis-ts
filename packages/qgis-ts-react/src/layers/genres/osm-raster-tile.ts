@@ -4,7 +4,7 @@ import { Options as TileOptions } from 'ol/layer/BaseTile';
 import OSM, { Options as OsmOptions } from 'ol/source/OSM';
 import TileSourceType from 'ol/source/Tile';
 import { MapLayer } from "../defs";
-import { LayerGenre, GenreID, LayerMatch } from "./base";
+import { LayerGenre, LayerMatch } from "./base";
 import { GenreRegistry } from './registry';
 
 

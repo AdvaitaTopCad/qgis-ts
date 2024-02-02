@@ -1,5 +1,6 @@
 import { FC } from "react";
 import { BarProps, ZIndex, barSize } from "./defs";
+import { useQgisMapDisplayContext } from "../map";
 
 
 /**
@@ -12,22 +13,28 @@ import { BarProps, ZIndex, barSize } from "./defs";
  * To lay the children from right to left, set the `flexDirection` property
  * to `row-reverse`.
  */
-export const TopBar: FC<BarProps> = ({ children, ...rest }) => (
-    <div
-        style={{
-            position: 'absolute',
-            top: 0,
-            left: barSize,
-            right: barSize,
-            minHeight: barSize,
-            backgroundColor: 'transparent',
-            zIndex: ZIndex.Bar,
-            display: "flex",
-            flexDirection: "row",
-            flexWrap: "wrap",
-            ...rest
-        }}
-    >
-        {children}
-    </div>
-)
+export const TopBar: FC<BarProps> = ({ children, ...rest }) => {
+    const { buttonSize } = useQgisMapDisplayContext();
+    const finalSize = buttonSize === "small" ? "32px" : (
+        buttonSize === "medium" ? "40px" : "48px"
+    );
+    return (
+        <div
+            style={{
+                position: 'absolute',
+                top: 0,
+                left: finalSize,
+                right: finalSize,
+                minHeight: finalSize,
+                backgroundColor: 'transparent',
+                zIndex: ZIndex.Bar,
+                display: "flex",
+                flexDirection: "row",
+                flexWrap: "wrap",
+                ...rest
+            }}
+        >
+            {children}
+        </div>
+    );
+}

@@ -1,5 +1,3 @@
-
-
 export type { BaseButtonProps } from './buttons';
 export {
     BaseLayersButton,
@@ -8,6 +6,7 @@ export {
     HomeButton,
     MyLocationButton,
     OverlayLayersButton,
+    SettingsButton,
     ZoomInButton,
     ZoomOutButton,
 } from './buttons';
@@ -57,3 +56,7 @@ export {
     OverlayContainerStyled,
     OverlayTree,
 } from './components';
+
+
+export type { SettingsDrawerProps } from './settings';
+export { SettingsDrawer } from './settings';

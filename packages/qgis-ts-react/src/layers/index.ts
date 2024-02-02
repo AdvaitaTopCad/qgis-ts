@@ -11,12 +11,18 @@ export type {
     LayerMatch,
     GeoJsonVector,
     OsmTileRaster,
-    XyzTileRaster
+    XyzTileRaster,
+    WfsFromCapab,
+    WmsFromCapab,
+    WmtsFromCapab
 } from "./genres";
 export {
     LayerGenre,
     GenreRegistry,
     GeoJsonVectorGenre,
     OsmTileRasterGenre,
-    XyzTileRasterGenre
+    XyzTileRasterGenre,
+    WfsCapabGenre,
+    WmsCapabGenre,
+    WmtsCapabGenre
 } from "./genres";

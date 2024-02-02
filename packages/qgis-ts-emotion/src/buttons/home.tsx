@@ -40,7 +40,7 @@ export const HomeButton: FC<Omit<BaseButtonProps, "children">> = (props) => {
                 }
                 view.animate(homeView);
             }}>
-            <HomeIcon />
+            <HomeIcon fontSize="inherit" />
         </BaseButton>
     )
 }

@@ -11,18 +11,13 @@ import { UseLayersSliceResult } from './layers.slice';
  * The data that is stored in context for each map.
  */
 export interface QgisMapContext extends
-    Omit<QgisMapState, "mouse" | "layers">,
+    Omit<QgisMapState, "mouse" | "layers" | "display">,
     UseLayersSliceResult {
 
     /**
      * The translation provider.
      */
     intl: IntlShape;
-
-    /**
-     * The callback to enter or exit full screen mode.
-     */
-    setFullScreen: (fullScreen: boolean) => void;
 };
 
 

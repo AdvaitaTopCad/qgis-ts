@@ -1,6 +1,7 @@
 import { FC, ReactNode, forwardRef } from "react"
 import IconButton, { IconButtonProps } from '@mui/material/IconButton';
 import { Tooltip } from "@mui/material";
+import { useQgisMapDisplayContext } from "@qgis-ts/react";
 
 
 /**
@@ -33,26 +34,38 @@ export const BaseButton: FC<BaseButtonProps> = forwardRef(({
     leaveDelay,
     enterDelay,
     ...rest
-}, ref) => tooltip ? (
-    <Tooltip
-        arrow
-        title={tooltip}
-        enterDelay={enterDelay}
-        enterNextDelay={enterDelay}
-        leaveDelay={leaveDelay}
-    >
-        <IconButton
-            color="primary"
-            size="small"
-            ref={ref}
-            {...rest}
-        >
-            {children}
-        </IconButton>
-    </Tooltip>
-) : (
-        <IconButton color="primary" size="small" {...rest}>
-            {children}
-        </IconButton>
-    )
-);
+}, ref) => {
+    // Get the settings from the context.
+    const { buttonSize, } = useQgisMapDisplayContext();
+    console.log("[BaseButton] buttonSize %O", buttonSize);
+
+    return (
+        tooltip ? (
+            <Tooltip
+                arrow
+                title={tooltip}
+                enterDelay={enterDelay}
+                enterNextDelay={enterDelay}
+                leaveDelay={leaveDelay}
+            >
+                <IconButton
+                    color="primary"
+                    size={buttonSize}
+                    ref={ref}
+                    {...rest}
+                >
+                    {children}
+                </IconButton>
+            </Tooltip>
+        ) : (
+            <IconButton
+                color="primary"
+                size={buttonSize}
+                ref={ref}
+                {...rest}
+            >
+                {children}
+            </IconButton>
+        )
+    );
+});

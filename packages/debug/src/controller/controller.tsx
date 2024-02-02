@@ -9,6 +9,7 @@ import type {
     LayerID, MapLayer,
 } from "@qgis-ts/react";
 import { IntlProvider, useIntl } from "react-intl";
+import { QgisMapDisplayContextProvider } from "packages/map/qgis-ts-react/src/map/display-context";
 
 
 /**
@@ -100,10 +101,6 @@ export const MapDebugControllerInner: FC<MapDebugControllerProps> = ({
             intl: useIntl(),
             ...layerCallbacks,
 
-            // Callback for entering-exiting the full screen mode.
-            setFullScreen: useCallback((value: boolean) => {
-                console.log("setFullScreen(value=%O)", value);
-            }, []),
 
             // ------------------ [ State ] ------------------
 
@@ -126,10 +123,6 @@ export const MapDebugControllerInner: FC<MapDebugControllerProps> = ({
                 },
             },
 
-            display: {
-                fullScreen: false,
-            },
-
             ...props
         }}>
             <QgisMapLayersContextProvider value={{
@@ -144,33 +137,41 @@ export const MapDebugControllerInner: FC<MapDebugControllerProps> = ({
 
                 ...layerCallbacks
             }}>
-                <QgisMapMouseContextProvider value={{
-                    mapPos: [0, 0],
-                    pixelPos: [0, 0],
-                    tracking: true,
+                <QgisMapDisplayContextProvider value={{
+                    fullScreen: false,
+                    // Callback for entering-exiting the full screen mode.
+                    setFullScreen: useCallback((value: boolean) => {
+                        console.log("setFullScreen(value=%O)", value);
+                    }, []),
                 }}>
-                    <QgisOlMapContextProvider value={new OlMap({
-                        layers: [],
-                        controls: [],
-                        interactions: [],
-                        // keyboardEventTarget: data.mapNode as HTMLElement,
-                        view: new OlView({
-                            center: [0, 0],
-                            zoom: 0,
-                        })
-                    })}>
-                        <QgisMapViewContextProvider value={{
-                            mapId: "mapId",
-                            mapRef: useCallback(
-                                (element: HTMLDivElement | null) => {
-                                    console.log("mapRef(element=%O)", element);
-                                }, []
-                            ),
-                        }}>
-                            {children}
-                        </QgisMapViewContextProvider>
-                    </QgisOlMapContextProvider>
-                </QgisMapMouseContextProvider>
+                    <QgisMapMouseContextProvider value={{
+                        mapPos: [0, 0],
+                        pixelPos: [0, 0],
+                        tracking: true,
+                    }}>
+                        <QgisOlMapContextProvider value={new OlMap({
+                            layers: [],
+                            controls: [],
+                            interactions: [],
+                            // keyboardEventTarget: data.mapNode as HTMLElement,
+                            view: new OlView({
+                                center: [0, 0],
+                                zoom: 0,
+                            })
+                        })}>
+                            <QgisMapViewContextProvider value={{
+                                mapId: "mapId",
+                                mapRef: useCallback(
+                                    (element: HTMLDivElement | null) => {
+                                        console.log("mapRef(element=%O)", element);
+                                    }, []
+                                ),
+                            }}>
+                                {children}
+                            </QgisMapViewContextProvider>
+                        </QgisOlMapContextProvider>
+                    </QgisMapMouseContextProvider>
+                </QgisMapDisplayContextProvider>
             </QgisMapLayersContextProvider>
         </QgisMapContextProvider>
     )

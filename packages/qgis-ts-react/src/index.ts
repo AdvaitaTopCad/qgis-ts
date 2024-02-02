@@ -9,6 +9,8 @@ export type {
     QgisOlMapContext,
     QgisMapLayersContext,
     QgisMapViewContext,
+    LayersState, UseLayersSliceResult,
+    QgisMapDisplayContext,
 } from './map';
 export {
     QgisMapContextProvider,
@@ -21,7 +23,10 @@ export {
     QgisMapLayersContextProvider,
     useQgisMapLayersContext,
     QgisMapViewContextProvider,
-    useQgisMapViewContext
+    useQgisMapViewContext,
+    useLayersSlice,
+    QgisMapDisplayContextProvider,
+    useQgisMapDisplayContext
 } from './map';
 
 
@@ -32,7 +37,10 @@ export type {
     LayerMatch,
     GeoJsonVector,
     OsmTileRaster,
-    XyzTileRaster
+    XyzTileRaster,
+    WfsFromCapab,
+    WmsFromCapab,
+    WmtsFromCapab
 } from './layers';
 export {
     ROOT_LAYER_ID,
@@ -42,7 +50,10 @@ export {
     GenreRegistry,
     GeoJsonVectorGenre,
     OsmTileRasterGenre,
-    XyzTileRasterGenre
+    XyzTileRasterGenre,
+    WfsCapabGenre,
+    WmsCapabGenre,
+    WmtsCapabGenre
 } from './layers';
 
 

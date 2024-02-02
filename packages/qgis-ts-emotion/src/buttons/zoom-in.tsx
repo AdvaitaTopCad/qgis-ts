@@ -1,6 +1,6 @@
 import { FC } from "react"
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import { useQgisOlMapContext } from "@qgis-ts/react";
+import { useQgisMapDisplayContext, useQgisOlMapContext } from "@qgis-ts/react";
 import { BaseButton, BaseButtonProps } from "./base";
 import { useIntl } from "react-intl";
 import { changeZoom } from "@qgis-ts/core";
@@ -32,7 +32,7 @@ export const ZoomInButton: FC<Omit<BaseButtonProps, "children">> = (props) => {
             {...props}
             onClick={() => changeZoom(olMap, deltaStep)}
         >
-            <AddCircleIcon />
+            <AddCircleIcon fontSize="inherit" />
         </BaseButton>
     )
 }

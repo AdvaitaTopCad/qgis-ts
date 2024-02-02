@@ -1,8 +1,7 @@
-import { LayerID, MapLayer, QgisMapLayersContext } from "@qgis-ts/react";
+import { LayerID, LayersState, MapLayer, QgisMapLayersContext } from "@qgis-ts/react";
 import { Dispatch, SetStateAction } from "react";
 import { createContext, useContext } from "react";
 import { CreateProps, DeleteProps, IdObj, MoveProps, RenameProps } from "./defs";
-import { LayersState } from "packages/qgis-ts-react/src/map/layers.slice";
 
 
 /**

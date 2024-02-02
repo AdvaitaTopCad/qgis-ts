@@ -9,6 +9,13 @@ export type { QgisMapState, QgisMapDispatch } from './store';
 export { store } from './store';
 
 
+export type { QgisMapDisplayContext, } from './display-context';
+export {
+    QgisMapDisplayContextProvider,
+    useQgisMapDisplayContext
+} from './display-context';
+
+
 export type { DisplayState } from './display.slice';
 export { setFullScreen } from './display.slice';
 
@@ -36,6 +43,14 @@ export {
     QgisMapLayersContextProvider,
     useQgisMapLayersContext
 } from './layers-context';
+
+
+export type {
+    LayersState, UseLayersSliceResult
+} from './layers.slice';
+export {
+    useLayersSlice
+} from './layers.slice';
 
 
 export type { QgisMapViewContext, } from './view-context';

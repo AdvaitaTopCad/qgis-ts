@@ -121,7 +121,7 @@ export const BaseLayersButton: FC<Omit<BaseButtonProps, "children">> = (
                 {...props}
                 onClick={onClick}
             >
-                <SatelliteIcon />
+                <SatelliteIcon fontSize="inherit" />
             </BaseButton>
             <BackgroundContainer
                 open={open === "simple"}
