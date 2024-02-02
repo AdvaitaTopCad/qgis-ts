@@ -1,5 +1,13 @@
-export type { ScaleBarProps } from './controls';
-export { ScaleBar } from './controls';
+export type {
+    ScaleBarProps,
+    UseOlControlData,
+    MousePositionProps,
+} from './controls';
+export {
+    ScaleBar,
+    useOlControl,
+    MousePosition,
+} from './controls';
 
 
 export type {

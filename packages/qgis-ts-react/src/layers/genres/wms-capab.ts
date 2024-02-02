@@ -1,9 +1,11 @@
 import OlMap from 'ol/Map';
 import WMSCapabilities from 'ol/format/WMSCapabilities.js';
-import WMS from 'ol/source/WMS.js';
+import ImageWMS from 'ol/source/ImageWMS.js';
+import { Image as ImageLayer } from 'ol/layer.js';
 
 import { MapLayer } from "../defs";
 import { LayerGenre, LayerMatch } from "./base";
+import { GenreRegistry } from './registry';
 
 
 const parser = new WMSCapabilities();
@@ -65,10 +67,15 @@ export class WmsCapabGenre extends LayerGenre {
             });
             if (options) {
                 map.getLayers().push(
-                    new TileLayer({
-                        source: new WMS(options),
-                        ...tileOptions,
-                    })
+                    new ImageLayer({
+                        extent: [-13884991, 2870341, -7455066, 6338219],
+                        source: new ImageWMS({
+                            url: 'http://127.0.0.1:8001/ogc/example-2?SERVICE=WMS',
+                            params: { 'LAYERS': layerName },
+                            ratio: 1,
+                            serverType: 'qgis',
+                        }),
+                    }),
                 );
             } else {
                 console.error('No options for WMTS layer from capabilities.');
@@ -85,3 +92,7 @@ export class WmsCapabGenre extends LayerGenre {
         }
     }
 }
+
+
+// Register the genre.
+GenreRegistry.i.register(new WmsCapabGenre());

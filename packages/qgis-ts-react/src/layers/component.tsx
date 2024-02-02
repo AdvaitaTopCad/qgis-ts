@@ -47,10 +47,10 @@ export function MapLayerComp<T extends MapLayer = MapLayer>({
     settings,
     children
 }: MapLayerProps<T>) {
-    console.log(
-        "[MapLayerComp] rendering layerKind=%O, settings=%O",
-        layerKind, settings
-    );
+    // console.log(
+    //     "[MapLayerComp] rendering layerKind=%O, settings=%O",
+    //     layerKind, settings
+    // );
 
     const upperContext = useQgisMapLayersContext();
     const {

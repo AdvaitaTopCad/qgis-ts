@@ -14,7 +14,7 @@ type Props = Omit<BaseButtonProps, "children">
  * https://developer.mozilla.org/en-US/docs/Web/API/Geolocation/getCurrentPosition
  */
 export const MyLocationButton: FC<Props> = (props) => {
-    console.log("[MyLocationButton] render");
+    // console.log("[MyLocationButton] render");
     const {
         error,
         tooltip,

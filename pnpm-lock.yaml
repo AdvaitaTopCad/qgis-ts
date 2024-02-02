@@ -23,12 +23,15 @@ importers:
       ol:
         specifier: ^8.2.0
         version: 8.2.0
+      ol-wfs-capabilities:
+        specifier: ^2.0.0
+        version: 2.0.0(ol@8.2.0)
+      proj4:
+        specifier: ^2.10.0
+        version: 2.10.0
       react-arborist:
         specifier: ^3.4.0
         version: 3.4.0(@types/node@18.16.9)(@types/react@18.2.33)(react-dom@18.2.0)(react@18.2.0)
-      react-full-screen:
-        specifier: ^1.1.1
-        version: 1.1.1(react@18.2.0)
       uuid:
         specifier: ^9.0.1
         version: 9.0.1
@@ -180,6 +183,9 @@ importers:
       '@types/node':
         specifier: 18.16.9
         version: 18.16.9
+      '@types/proj4':
+        specifier: ^2.5.5
+        version: 2.5.5
       '@types/react':
         specifier: 18.2.33
         version: 18.2.33
@@ -6743,6 +6749,10 @@ packages:
 
   /@types/pretty-hrtime@1.0.3:
     resolution: {integrity: sha512-nj39q0wAIdhwn7DGUyT9irmsKK1tV0bd5WFEhgpqNTMFZ8cE+jieuTphCW0tfdm47S2zVT5mr09B28b1chmQMA==}
+    dev: true
+
+  /@types/proj4@2.5.5:
+    resolution: {integrity: sha512-y4tHUVVoMEOm2nxRLQ2/ET8upj/pBmoutGxFw2LZJTQWPgWXI+cbxVEUFFmIzr/bpFR83hGDOTSXX6HBeObvZA==}
     dev: true
 
   /@types/prop-types@15.7.11:
@@ -13711,6 +13721,10 @@ packages:
     engines: {node: '>= 0.6'}
     dev: true
 
+  /mgrs@1.0.0:
+    resolution: {integrity: sha512-awNbTOqCxK1DBGjalK3xqWIstBZgN6fxsMSiXLs9/spqWkF2pAhb2rrYCFSsr1/tT7PhcDGjZndG8SWYn0byYA==}
+    dev: false
+
   /micromatch@4.0.5:
     resolution: {integrity: sha512-DMy+ERcEW2q8Z2Po+WNXuw3c5YaUSFjAO5GsJqfEl7UjvtIuFKO6ZrKvcItdy98dwFI2N1tg3zNIdKaQT+aNdA==}
     engines: {node: '>=8.6'}
@@ -14206,6 +14220,14 @@ packages:
   /obuf@1.1.2:
     resolution: {integrity: sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==}
     dev: true
+
+  /ol-wfs-capabilities@2.0.0(ol@8.2.0):
+    resolution: {integrity: sha512-Y5NVCLJuP4U/NntZp0AHWPryc+KykgHP/J9n3bbEUdPPYoDPBx9m3LcWFfU5VVkYTaBpYFDQYsyZ+onisRZfVg==}
+    peerDependencies:
+      ol: '>= 5.0.0'
+    dependencies:
+      ol: 8.2.0
+    dev: false
 
   /ol@8.2.0:
     resolution: {integrity: sha512-/m1ddd7Jsp4Kbg+l7+ozR5aKHAZNQOBAoNZ5pM9Jvh4Etkf0WGkXr9qXd7PnhmwiC1Hnc2Toz9XjCzBBvexfXw==}
@@ -15442,6 +15464,13 @@ packages:
     engines: {node: '>= 0.6.0'}
     dev: true
 
+  /proj4@2.10.0:
+    resolution: {integrity: sha512-0eyB8h1PDoWxucnq88/EZqt7UZlvjhcfbXCcINpE7hqRN0iRPWE/4mXINGulNa/FAvK+Ie7F+l2OxH/0uKV36A==}
+    dependencies:
+      mgrs: 1.0.0
+      wkt-parser: 1.3.3
+    dev: false
+
   /promise.series@0.2.0:
     resolution: {integrity: sha512-VWQJyU2bcDTgZw8kpfBpB/ejZASlCrzwz5f2hjb/zlujOEB4oeiAhHygAWq8ubsX2GVkD4kCU5V2dwOTaCY5EQ==}
     engines: {node: '>=0.12'}
@@ -15705,16 +15734,6 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
       react-is: 18.1.0
     dev: true
-
-  /react-full-screen@1.1.1(react@18.2.0):
-    resolution: {integrity: sha512-xoEgkoTiN0dw9cjYYGViiMCBYbkS97BYb4bHPhQVWXj1UnOs8PZ1rPzpX+2HMhuvQV1jA5AF9GaRbO3fA5aZtg==}
-    engines: {node: '>=10'}
-    peerDependencies:
-      react: '>= 16.8.0'
-    dependencies:
-      fscreen: 1.2.0
-      react: 18.2.0
-    dev: false
 
   /react-intl@6.6.1(react@18.2.0)(typescript@5.3.3):
     resolution: {integrity: sha512-oaMRr5A5KVpaOgnF0vdLTmBPI8rLQPReujmXTeIt2jCmZOJ+bcgqY/idFLVr52Iu/Aia8pDMBFUnzRjcg8T5aw==}
@@ -18494,6 +18513,10 @@ packages:
     dependencies:
       isexe: 2.0.0
     dev: true
+
+  /wkt-parser@1.3.3:
+    resolution: {integrity: sha512-ZnV3yH8/k58ZPACOXeiHaMuXIiaTk1t0hSUVisbO0t4RjA5wPpUytcxeyiN2h+LZRrmuHIh/1UlrR9e7DHDvTw==}
+    dev: false
 
   /wordwrap@1.0.0:
     resolution: {integrity: sha512-gvVzJFlPycKc5dZN4yPkP8w7Dc37BtP1yczEneOb4uq34pXZcvrtRTmWV8W+Ume+XCxKgbjM+nevkyFPMybd4Q==}

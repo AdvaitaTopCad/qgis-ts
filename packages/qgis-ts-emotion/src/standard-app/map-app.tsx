@@ -1,6 +1,6 @@
 import { FC } from "react";
 import {
-    BottomBar, LeftBar, MapLayerComp, QgisMapController,
+    BottomBar, LeftBar, MapLayerComp, MousePosition, QgisMapController,
     QgisMapControllerProps, QgisMapView, RightBar, ScaleBar, TopBar
 } from "@qgis-ts/react";
 
@@ -50,6 +50,7 @@ export const QgisStandardApp: FC<QgisStandardAppProps> = ({
             <QgisMapView style={viewStyle}>
                 <FullScreenSwitcher side="tr" />
                 <BottomBar>
+                    <MousePosition />
                     <ScaleBar />
                 </BottomBar>
                 <LeftBar />

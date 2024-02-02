@@ -276,7 +276,8 @@ export const QgisMapController: FC<QgisMapControllerProps> = (props) => {
 
     // Compute the value that will be provided through the display context.
     const displayValue = useMemo(() => {
-        console.log("[QgisMapController] displayValue: %O", layersState);
+        // console.log("[QgisMapController] displayValue: %O", layersState);
+        // TODO renders too much.
         return ({
             ...displayState,
             ...displaySlice,

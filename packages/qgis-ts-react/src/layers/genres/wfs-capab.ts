@@ -3,6 +3,7 @@ import WFSCapabilities from 'ol-wfs-capabilities';
 
 import { MapLayer } from "../defs";
 import { LayerGenre, LayerMatch } from "./base";
+import { GenreRegistry } from './registry';
 
 
 // The parser for WFS capabilities.
@@ -52,10 +53,10 @@ export class WfsCapabGenre extends LayerGenre {
             return response.text();
         }).then(function (text) {
             const result = parser.read(text);
-            const options = optionsFromCapabilities(result, {
-                layer: layerName,
-                matrixSet: 'EPSG:3857',
-            });
+            // const options = optionsFromCapabilities(result, {
+            //     layer: layerName,
+            //     matrixSet: 'EPSG:3857',
+            // });
         })
     }
 
@@ -65,3 +66,7 @@ export class WfsCapabGenre extends LayerGenre {
         }
     }
 }
+
+
+// Register the genre.
+GenreRegistry.i.register(new WfsCapabGenre());

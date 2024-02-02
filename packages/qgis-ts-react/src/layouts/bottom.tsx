@@ -31,6 +31,9 @@ export const BottomBar: FC<BarProps> = ({ children, ...rest }) => {
                 display: "flex",
                 flexDirection: "row",
                 flexWrap: "wrap",
+                alignContent: "center",
+                justifyContent: "center",
+                alignItems: "center",
                 ...rest
             }}
         >

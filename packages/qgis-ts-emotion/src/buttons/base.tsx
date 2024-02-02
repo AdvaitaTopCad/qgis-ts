@@ -37,7 +37,7 @@ export const BaseButton: FC<BaseButtonProps> = forwardRef(({
 }, ref) => {
     // Get the settings from the context.
     const { buttonSize, } = useQgisMapDisplayContext();
-    console.log("[BaseButton] buttonSize %O", buttonSize);
+    // console.log("[BaseButton] buttonSize %O", buttonSize);
 
     return (
         tooltip ? (

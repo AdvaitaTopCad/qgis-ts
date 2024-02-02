@@ -80,7 +80,7 @@ export function useGeolocation() {
     // On first render set it up.
     useEffect(() => {
         if (!olMap) return;
-        console.log("[MyLocationButton] setting up");
+        // console.log("[MyLocationButton] setting up");
 
         const view = olMap.getView();
 
@@ -99,11 +99,11 @@ export function useGeolocation() {
             tracking: false,
         });
         data.current.geolocation = geolocation;
-        console.log("[MyLocationButton] geolocation created: %O", geolocation);
+        // console.log("[MyLocationButton] geolocation created: %O", geolocation);
 
         // update the tooltip when the position changes.
         geolocation.on('change', function () {
-            console.log("[MyLocationButton] geolocation change");
+            // console.log("[MyLocationButton] geolocation change");
             setError(null);
             setTooltip(
                 <GeolocationTable {...data.current} />
@@ -112,7 +112,7 @@ export function useGeolocation() {
 
         // handle geolocation error.
         geolocation.on('error', function (error) {
-            console.log("[MyLocationButton] geolocation error: %O", error);
+            // console.log("[MyLocationButton] geolocation error: %O", error);
             setError(error.message);
             setTooltip(<GeolocationErrorMessage error={error} intl={intl} />);
         });
@@ -178,7 +178,7 @@ export function useGeolocation() {
         // olMap!.addLayer(data.current.layer!);
 
         return () => {
-            console.log("[MyLocationButton] tearing down");
+            // console.log("[MyLocationButton] tearing down");
             if (olMap && data.current.layer && data.current.layerInMap) {
                 olMap.removeLayer(data.current.layer);
                 data.current.layer = null;
@@ -189,35 +189,35 @@ export function useGeolocation() {
 
     // Click handler.
     const handleClick = useCallback(() => {
-        console.log("[MyLocationButton] click");
+        // console.log("[MyLocationButton] click");
         setError(null);
         setTracking((prev) => {
             let result;
             if (!olMap) {
                 result = false;
-                console.log("[MyLocationButton] click without map");
+                // console.log("[MyLocationButton] click without map");
             } else if (!data.current.geolocation) {
                 result = false;
-                console.log("[MyLocationButton] click without geolocation");
+                // console.log("[MyLocationButton] click without geolocation");
             } else {
                 result = !prev;
                 data.current.geolocation.setTracking(result);
-                console.log("[MyLocationButton] tracking: %O", result);
+                // console.log("[MyLocationButton] tracking: %O", result);
             }
             if (result) {
                 data.current.oneJumpOnly = true;
                 olMap!.addLayer(data.current.layer!);
                 data.current.layerInMap = true;
-                console.log(
-                    "[MyLocationButton] the layer was added to the map" +
-                    "geolocation is %O", data.current.geolocation
-                );
+                // console.log(
+                //     "[MyLocationButton] the layer was added to the map" +
+                //     "geolocation is %O", data.current.geolocation
+                // );
             } else if (olMap && data.current.layer && data.current.layerInMap) {
                 olMap.removeLayer(data.current.layer);
                 data.current.layerInMap = false;
-                console.log(
-                    "[MyLocationButton] the layer was removed from the map"
-                );
+                // console.log(
+                //     "[MyLocationButton] the layer was removed from the map"
+                // );
                 setTooltip(intl.formatMessage({
                     id: "map.buttons.my-loc.tooltip",
                     defaultMessage: "Click to navigate to your location.",

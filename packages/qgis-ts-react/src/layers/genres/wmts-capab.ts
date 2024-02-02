@@ -1,12 +1,13 @@
 import OlMap from 'ol/Map';
 import TileLayer from 'ol/layer/Tile.js';
-import WMTS, {optionsFromCapabilities} from 'ol/source/WMTS.js';
+import WMTS, { optionsFromCapabilities } from 'ol/source/WMTS.js';
 import WMTSCapabilities from 'ol/format/WMTSCapabilities.js';
 import { Options as TileOptions } from 'ol/layer/BaseTile';
 import TileSourceType from 'ol/source/Tile';
 
 import { MapLayer } from "../defs";
 import { LayerGenre, LayerMatch } from "./base";
+import { GenreRegistry } from './registry';
 
 
 const parser = new WMTSCapabilities();
@@ -37,7 +38,7 @@ export interface WmtsFromCapab extends MapLayer {
     /**
      * The options for the tile layer.
      */
-    tileOptions: Omit<TileOptions<TileSourceType>, "source">;
+    tileOptions?: Omit<TileOptions<TileSourceType>, "source">;
 }
 
 
@@ -62,11 +63,13 @@ export class WmtsCapabGenre extends LayerGenre {
             return response.text();
         }).then(function (text) {
             const result = parser.read(text);
+            console.log('[WmtsCapabGenre] Result from server:', result);
             const options = optionsFromCapabilities(result, {
                 layer: layerName,
-                matrixSet: 'EPSG:3857',
+                // matrixSet: 'EPSG:3857',
             });
             if (options) {
+                console.log('[WmtsCapabGenre] WMTS options:', options);
                 map.getLayers().push(
                     new TileLayer({
                         source: new WMTS(options),
@@ -74,10 +77,16 @@ export class WmtsCapabGenre extends LayerGenre {
                     })
                 );
             } else {
-                console.error('No options for WMTS layer from capabilities.');
+                console.error(
+                    '[WmtsCapabGenre] No options for WMTS layer ' +
+                    'from capabilities.'
+                );
             }
         }).catch(function (error) {
-            console.error('Error fetching WMTS capabilities:', error);
+            console.error(
+                '[WmtsCapabGenre] Error fetching WMTS capabilities:',
+                error
+            );
         });
     }
 
@@ -87,3 +96,8 @@ export class WmtsCapabGenre extends LayerGenre {
         }
     }
 }
+
+
+// Register the genre.
+GenreRegistry.i.register(new WmtsCapabGenre());
+

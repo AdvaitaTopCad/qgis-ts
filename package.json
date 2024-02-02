@@ -63,6 +63,7 @@
         "@types/fscreen": "^1.0.4",
         "@types/jest": "^29.5.11",
         "@types/node": "18.16.9",
+        "@types/proj4": "^2.5.5",
         "@types/react": "18.2.33",
         "@types/react-dom": "18.2.14",
         "@types/uuid": "^9.0.8",
@@ -109,6 +110,8 @@
         "@textea/json-viewer": "^3.3.0",
         "fscreen": "^1.2.0",
         "ol": "^8.2.0",
+        "ol-wfs-capabilities": "^2.0.0",
+        "proj4": "^2.10.0",
         "react-arborist": "^3.4.0",
         "uuid": "^9.0.1"
     }

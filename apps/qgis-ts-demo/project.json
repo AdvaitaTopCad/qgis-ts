@@ -72,7 +72,8 @@
             "defaultConfiguration": "development",
             "options": {
                 "buildTarget": "qgis-ts-demo:build",
-                "hmr": true
+                "hmr": true,
+                "port": 4203
             },
             "configurations": {
                 "development": {
