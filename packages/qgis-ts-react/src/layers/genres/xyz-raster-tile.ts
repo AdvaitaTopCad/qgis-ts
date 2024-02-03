@@ -7,6 +7,7 @@ import TileSourceType from 'ol/source/Tile';
 import { MapLayer } from "../defs";
 import { LayerGenre, LayerMatch } from "./base";
 import { GenreRegistry } from './registry';
+import { Collection } from 'ol';
 
 
 /**
@@ -36,22 +37,27 @@ export class XyzTileRasterGenre extends LayerGenre {
         return 'xyz-tile-raster';
     }
 
-    createLayers(map: OlMap, {
-        tileOptions,
-        ...settings
-    }: XyzTileRaster): void {
-        map.getLayers().push(
-            new TileLayer({
-                source: new XYZ(settings),
-                ...tileOptions,
-            })
-        );
+    createLayers(
+        map: OlMap,
+        collection: Collection<any>,
+        props: XyzTileRaster
+    ): void {
+        const {
+            tileOptions,
+            ...settings
+        } = props;
+        const newLayer = new TileLayer({
+            source: new XYZ(settings),
+            ...tileOptions,
+        });
+        newLayer.set('settings', props);
+        collection.push(newLayer);
     }
 
-    syncLayers(map: OlMap, match: LayerMatch): void {
-        if (!LayerGenre.compareSettings(match)) {
-            this.createLayers(map, match.settings as XyzTileRaster);
-        }
+    syncLayers(
+        map: OlMap, collection: Collection<any>, match: LayerMatch
+    ): boolean {
+        return this.syncCommonLayers(map, collection, match, []);
     }
 }
 

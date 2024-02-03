@@ -33,9 +33,9 @@ describe("XyzTileRasterGenre", () => {
             settings,
             oldSettings: settings,
             layers: [],
-            genre: xyzTileRasterGenre
+            genre: xyzTileRasterGenre as any
         };
-        xyzTileRasterGenre.createLayers(map, settings);
+        xyzTileRasterGenre.createLayers(map, map.getLayers(), settings);
         const layers = map.getLayers().getArray();
         expect(layers.length).toEqual(1);
         expect(layers[0]).toBeInstanceOf(TileLayer);

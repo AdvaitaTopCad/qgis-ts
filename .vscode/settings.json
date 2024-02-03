@@ -6,14 +6,18 @@
         "EPSG",
         "fscreen",
         "krass",
+        "loadingstrategy",
         "moveend",
         "movestart",
         "olmap",
         "openlayers",
+        "OUTPUTFORMAT",
         "overscan",
         "singleclick",
+        "SRSNAME",
         "sterea",
         "textea",
+        "tilegrid",
         "towgs"
     ]
 }

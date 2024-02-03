@@ -8,6 +8,8 @@ import TileSourceType from 'ol/source/Tile';
 import { MapLayer } from "../defs";
 import { LayerGenre, LayerMatch } from "./base";
 import { GenreRegistry } from './registry';
+import { Collection } from 'ol';
+import { appendParams } from 'ol/uri';
 
 
 const parser = new WMTSCapabilities();
@@ -51,14 +53,22 @@ export class WmtsCapabGenre extends LayerGenre {
         return 'wmts-from-capab';
     }
 
-    createLayers(map: OlMap, {
-        capabUrl,
-        layerName,
-        tileOptions,
-        ...settings
-    }: WmtsFromCapab): void {
+    createLayers(
+        map: OlMap,
+        collection: Collection<any>,
+        props: WmtsFromCapab
+    ): void {
+        const {
+            capabUrl,
+            layerName,
+            tileOptions,
+        } = props;
         fetch(
-            capabUrl
+            appendParams(capabUrl, {
+                'SERVICE': 'WMTS',
+                'REQUEST': 'GetCapabilities',
+                'LAYERS': layerName
+            }),
         ).then(function (response) {
             return response.text();
         }).then(function (text) {
@@ -66,16 +76,20 @@ export class WmtsCapabGenre extends LayerGenre {
             console.log('[WmtsCapabGenre] Result from server:', result);
             const options = optionsFromCapabilities(result, {
                 layer: layerName,
-                // matrixSet: 'EPSG:3857',
+                projection: map.getView().getProjection(),
+                matrixSet: 'EPSG:3857',
             });
             if (options) {
                 console.log('[WmtsCapabGenre] WMTS options:', options);
-                map.getLayers().push(
-                    new TileLayer({
-                        source: new WMTS(options),
-                        ...tileOptions,
-                    })
-                );
+                const newLayer = new TileLayer({
+                    source: new WMTS({
+                        ...options,
+                        cacheSize: 1024,
+                    }),
+                    ...tileOptions,
+                });
+                newLayer.set('settings', props);
+                collection.push(newLayer);
             } else {
                 console.error(
                     '[WmtsCapabGenre] No options for WMTS layer ' +
@@ -90,10 +104,10 @@ export class WmtsCapabGenre extends LayerGenre {
         });
     }
 
-    syncLayers(map: OlMap, match: LayerMatch): void {
-        if (!LayerGenre.compareSettings(match)) {
-            this.createLayers(map, match.settings as WmtsFromCapab);
-        }
+    syncLayers(
+        map: OlMap, collection: Collection<any>, match: LayerMatch
+    ): boolean {
+        return this.syncCommonLayers(map, collection, match, []);
     }
 }
 

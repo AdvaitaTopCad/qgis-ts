@@ -15,6 +15,8 @@ export { WfsCapabGenre } from "./wfs-capab";
 export type { WmsFromCapab } from "./wms-capab";
 export { WmsCapabGenre } from "./wms-capab";
 
+export { WmsTileCapabGenre } from "./wms-tile-capab";
+
 export type { WmtsFromCapab } from "./wmts-capab";
 export { WmtsCapabGenre } from "./wmts-capab";
 

@@ -3,6 +3,7 @@ import { GenreID, LayerGenre, LayerMatch } from "./base";
 import { GROUP_GENRE_ID, LayerID, MapLayer } from '../defs';
 import BaseLayer from 'ol/layer/Base';
 import { Collection } from 'ol';
+import { Layer } from 'ol/layer';
 
 
 /**
@@ -74,30 +75,35 @@ export class GenreRegistry {
      * Add, remove and edit layers in the map to match the settings.
      *
      * @param map The map to sync the layers in.
-     * @param baseLayer The base layer.
-     * @param overlays The overlays.
+     * @param baseLayer The current base layer.
+     * @param overlays The flat list of overlays.
      */
     public syncLayers(
         map: OlMap,
         baseLayer: MapLayer | undefined,
         overlays: Record<LayerID, MapLayer>
     ) {
-        const unknownLayers: BaseLayer[] = [];
-        const removedLayers: BaseLayer[] = [];
+        // Has a match only if
         const baseMatch: LayerMatch | undefined = baseLayer ? {
             settings: baseLayer,
             oldSettings: baseLayer,
             layers: [],
             genre: this.getGenre(baseLayer.genre)
         } : undefined;
+
+        const unknownLayers: BaseLayer[] = [];
+        const removedLayers: BaseLayer[] = [];
         const overlayMatches: Record<LayerID, LayerMatch> = {};
         const layersCollection: Collection<BaseLayer> = map.getLayers();
+        const newCollection = new Collection<any>([], { unique: true });
+        let needsRecreate: boolean = false;
 
-        // Go through all layers in the map and match them with the settings.
+        // Go through all layers in the map and match them with the
+        // new settings.
         layersCollection.forEach((layer) => {
             const layerSettings: (MapLayer | undefined) = layer.get("settings");
 
-            // Save layers that are not registered.
+            // Save layers that do not have our flavour of settings.
             if (!layerSettings) {
                 unknownLayers.push(layer);
                 return;
@@ -137,22 +143,38 @@ export class GenreRegistry {
             removedLayers.push(layer);
         });
 
-        // Remove all layers from the map.
-        layersCollection.clear();
+        // console.log('[GenreRegistry] unknownLayers:', unknownLayers);
+        // console.log('[GenreRegistry] removedLayers:', removedLayers);
+        // console.log('[GenreRegistry] baseMatch:', baseMatch);
+        // console.log('[GenreRegistry] overlayMatches:', overlayMatches);
+
 
         // Add the base layer.
         if (baseMatch) {
             if (baseMatch.layers.length > 0) {
                 if (baseMatch.settings === baseMatch.oldSettings) {
                     // The settings have not changed, so we can reuse them.
-                    layersCollection.extend(baseMatch.layers);
+                    newCollection.extend(baseMatch.layers);
+                    // console.log(
+                    //     '[GenreRegistry] no change in :', baseMatch.settings.id
+                    // );
                 } else {
                     // Deffer to the genre to create/update the layers.
-                    baseMatch.genre.syncLayers(map, baseMatch);
+                    needsRecreate = baseMatch.genre.syncLayers(
+                        map, newCollection, baseMatch
+                    ) || needsRecreate;
+                    // console.log(
+                    //     '[GenreRegistry] recreate after base %s is %O:',
+                    //     baseMatch.settings.id, needsRecreate
+                    // );
                 }
             } else {
                 // We need to create the layers.
-                baseMatch.genre.createLayers(map, baseLayer!);
+                baseMatch.genre.createLayers(map, newCollection, baseLayer!);
+                needsRecreate = true;
+                // console.log(
+                //     '[GenreRegistry] create new base layer %s:', baseLayer!.id
+                // );
             }
         }
 
@@ -161,17 +183,46 @@ export class GenreRegistry {
             // Do we already have a match for this overlay?
             let match = overlayMatches[overlay.id];
             if (match) {
+                // console.log('[GenreRegistry] Overlay mMatch:', match);
                 if (match.settings === match.oldSettings) {
                     // The settings have not changed, so we can reuse them.
-                    layersCollection.extend(match.layers);
+                    newCollection.extend(match.layers);
+                    // console.log(
+                    //     '[GenreRegistry] no change in :', match.settings.id
+                    // );
                 } else {
                     // Deffer to the genre to create/update the layers.
-                    match.genre.syncLayers(map, match);
+                    needsRecreate = match.genre.syncLayers(
+                        map, newCollection, match
+                    ) || needsRecreate;
+                    // console.log(
+                    //     '[GenreRegistry] recreate after overlay %s is %O:',
+                    //     match.settings.id, needsRecreate
+                    // );
                 }
             } else if (overlay.genre !== GROUP_GENRE_ID) {
                 // We need to create the layers.
-                this.getGenre(overlay.genre).createLayers(map, overlay);
+                this.getGenre(overlay.genre).createLayers(
+                    map, newCollection, overlay
+                );
+                needsRecreate = true;
+                // console.log(
+                //     '[GenreRegistry] create new overlay %s:', overlay.id
+                // );
             }
+        }
+
+        if (needsRecreate) {
+            map.setLayers(newCollection);
+            // console.log('[GenreRegistry] Layers recreated.');
+        } else {
+            removedLayers.forEach((layer) => {
+                layersCollection.remove(layer);
+            });
+            // console.log(
+            //     '[GenreRegistry] Layers NOT recreated (%d removed).',
+            //     removedLayers.length
+            // );
         }
     }
 }

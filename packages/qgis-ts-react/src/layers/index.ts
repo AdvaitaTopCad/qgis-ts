@@ -24,5 +24,6 @@ export {
     XyzTileRasterGenre,
     WfsCapabGenre,
     WmsCapabGenre,
-    WmtsCapabGenre
+    WmtsCapabGenre,
+    WmsTileCapabGenre,
 } from "./genres";

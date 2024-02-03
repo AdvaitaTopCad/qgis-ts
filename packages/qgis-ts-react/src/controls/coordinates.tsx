@@ -89,7 +89,7 @@ export const MousePosition: FC<MousePositionProps> = (props) => {
             }
             return coordinate.map(
                 (value: any) => value.toFixed(digits)
-            ).join(", ");
+            ).join(",");
         },
         ...props
     });

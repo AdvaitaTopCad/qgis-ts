@@ -6,6 +6,7 @@ import GeoJSON from 'ol/format/GeoJSON.js';
 import { MapLayer } from "../defs";
 import { LayerGenre, LayerMatch } from "./base";
 import { GenreRegistry } from './registry';
+import { Collection } from 'ol';
 
 
 /**
@@ -37,55 +38,62 @@ export class GeoJsonVectorGenre extends LayerGenre {
         return 'geojson-vector';
     }
 
-    createLayers(map: OlMap, {
-        vectorOptions,
-        // Omitted
-        genre,
-        parent,
-        title,
-        id,
-        // General layer settings
-        opacity,
-        visible,
-        extent,
-        zIndex,
-        minResolution,
-        maxResolution,
-        minZoom,
-        maxZoom,
-        background,
-        // The rest are for the source.
-        ...settings
-    }: GeoJsonVector): void {
-        const newLayer =new VectorLayer({
-                source: new VectorSource({
-                    // TODO: If performance is the primary concern, and
-                    // features are not going to be modified or
-                    // round-tripped through the format, consider using
-                    // {@link module:ol/render/Feature~RenderFeature}
-                    format: new GeoJSON(),
-                    ...settings,
-                }),
-                opacity,
-                visible,
-                extent,
-                zIndex,
-                minResolution,
-                maxResolution,
-                minZoom,
-                maxZoom,
-                background,
-                ...vectorOptions,
-            });
-
-        map.getLayers().push(newLayer);
+    createLayers(
+        map: OlMap,
+        collection: Collection<any>,
+        props: GeoJsonVector
+    ): void {
+        const {
+            vectorOptions,
+            // Omitted
+            genre,
+            parent,
+            title,
+            id,
+            // General layer settings
+            opacity,
+            visible,
+            extent,
+            zIndex,
+            minResolution,
+            maxResolution,
+            minZoom,
+            maxZoom,
+            background,
+            // The rest are for the source.
+            ...settings
+        } = props;
+        const newLayer = new VectorLayer({
+            source: new VectorSource({
+                // TODO: If performance is the primary concern, and
+                // features are not going to be modified or
+                // round-tripped through the format, consider using
+                // {@link module:ol/render/Feature~RenderFeature}
+                format: new GeoJSON(),
+                ...settings,
+            }),
+            opacity,
+            visible,
+            extent,
+            zIndex,
+            minResolution,
+            maxResolution,
+            minZoom,
+            maxZoom,
+            background,
+            ...vectorOptions,
+        });
+        newLayer.set('settings', props);
+        collection.push(newLayer);
         console.log("[GeoJsonVectorGenre] createLayers %O", newLayer);
     }
 
-    syncLayers(map: OlMap, match: LayerMatch): void {
-        if (!LayerGenre.compareSettings(match)) {
-            this.createLayers(map, match.settings as GeoJsonVector);
-        }
+    syncLayers(
+        map: OlMap,
+        collection: Collection<any>,
+        match: LayerMatch
+    ): boolean {
+        return this.syncCommonLayers(map, collection, match, []);
     }
 }
 

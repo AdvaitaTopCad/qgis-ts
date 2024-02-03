@@ -74,9 +74,14 @@ const computeProjections = (
     ).filter(
         key => !(values[key] instanceof Projection)
     ).forEach(
-        key => { proj4.defs(key, (values[key] as ProjectionDef).projDef); }
-    );
+        key => {
+            const value: ProjectionDef = values[key] as ProjectionDef;
+            proj4.defs(key, value.projDef);
+            console.log("[QgisMapController] get back: %O", proj4.defs(key));
 
+        }
+    );
+    console.log("[QgisMapController] proj4.defs: %O", proj4.defs);
     // Make projections defined in proj4.
     register(proj4);
 
